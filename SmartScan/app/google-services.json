@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "946375985135",
+    "project_id": "smarttrashcan-307c0",
+    "storage_bucket": "smarttrashcan-307c0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:946375985135:android:849ae24280171e881f981a",
+        "android_client_info": {
+          "package_name": "com.example.smartscan"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "946375985135-u52e691h7dvcjjvjqu7e656hscs4aokm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkdWnfKqcnsp8WB2Tlsjds0daPRxzR6DI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "946375985135-u52e691h7dvcjjvjqu7e656hscs4aokm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

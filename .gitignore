@@ -69,3 +69,4 @@ functions/.vscode/launch.json
 functions/package-lock.json
 .gitignore
 scripts/.vscode/
+.idea/workspace.xml
