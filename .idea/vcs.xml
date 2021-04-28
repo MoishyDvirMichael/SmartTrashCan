@@ -3,6 +3,5 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/SmartScan" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/SmartTrashCanApp" vcs="Git" />
   </component>
 </project>
