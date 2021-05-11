@@ -12,7 +12,7 @@
     <com.google.android.material.textview.MaterialTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcome to SmartCan!"
+        android:text="Welcome to SmartScan!"
         android:id="@+id/Welcome_to_smartcan"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="34dp"
