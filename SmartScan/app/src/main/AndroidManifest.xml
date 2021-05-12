@@ -3,6 +3,10 @@
     package="com.example.smartscan">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name = "android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name = "android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name = "android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name = "android.permission.ACCESS_WIFI_STATE" />
 
     <application
         android:allowBackup="true"
@@ -10,9 +14,11 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
-        android:theme="@style/Theme.SmartScan"
-        >
-
+        android:theme="@style/Theme.SmartScan">
+        <activity
+            android:name=".ConnectNewDevice"
+            android:label="@string/title_activity_connect_new_device"
+            android:theme="@style/Theme.SmartScan.NoActionBar" />
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"

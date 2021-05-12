@@ -12,4 +12,15 @@
     <string name="menu_slideshow">Slideshow</string>
     <string name="web_client_id">946375985135-u52e691h7dvcjjvjqu7e656hscs4aokm.apps.googleusercontent.com</string>
     <string name="action_Logout">Sign Out</string>
+    <string name="title_activity_connect_new_device">ConnectNewDevice</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="connect_to_your_device">Connect to Your Device</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="your_wifi_name_ssid">Your WiFi Name (SSID)</string>
+    <string name="your_wifi_passowrd">Your WiFi Passowrd</string>
 </resources>
