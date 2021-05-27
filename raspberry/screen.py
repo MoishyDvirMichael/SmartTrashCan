@@ -1,8 +1,10 @@
 
-from consts import Consts
-from wellcome_screen import Wellcome_screen
 import tkinter as tk
 from PIL import Image, ImageTk
+
+from consts import Consts
+from wellcome_screen import Wellcome_screen
+from waitting_screen import Waitting_screen
 
 
 def first_screen():
@@ -15,18 +17,10 @@ def first_screen():
 
 def second_screen():
     root = tk.Tk()
-    # root.attributes("-fullscreen", True)
-    a = tk.Label(root,
-                 text ="Thank you, please wait..",
-                 font=("Arial Bold", 20),
-                 bg=Consts.COLOR_SECONDARY,
-                 fg=Consts.COLOR_SECONDARY_TEXT,
-                 padx = 10,
-                 pady = 5)
-    a.config(anchor='center')
-    a.pack(expand=True)
     root.geometry(Consts.SCREEN_SIZE)
-    root.configure(background=Consts.COLOR_SECONDARY)
+    root.configure(background=Consts.COLOR_BG_WAITTING)
+    screen = Waitting_screen(master=root)
+    screen.show_screen()
     root.mainloop()
 
 def show_picture():
