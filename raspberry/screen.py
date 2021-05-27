@@ -1,34 +1,16 @@
 
 from consts import Consts
+from wellcome_screen import Wellcome_screen
 import tkinter as tk
 from PIL import Image, ImageTk
 
 
 def first_screen():
     root = tk.Tk()
-    # root.attributes("-fullscreen", True)
-    a = tk.Label(root,
-                 text ="Wellcome!",
-                 font=("Arial Bold", 30),
-                 bg=Consts.COLOR_PRIMARY,
-                 fg=Consts.COLOR_PRIMARY_TEXT,
-                 padx = 2,
-                 pady = 2)
-    a.config(anchor='center')
-    a.pack(expand=True)
-    b = tk.Label(root,
-                 text ="Please enter a barcode.",
-                 font=("Arial Bold", 20),
-                 bg=Consts.COLOR_PRIMARY,
-                 fg=Consts.COLOR_PRIMARY_TEXT,
-                 padx = 2,
-                 pady = 2)
-    b.config(anchor='center')
-    b.pack(expand=True)
     root.geometry(Consts.SCREEN_SIZE)
     root.configure(background=Consts.COLOR_PRIMARY)
-    # btn = tk.Button(root, text="barcode is given")
-    # btn.grid(column=1, row=0)
+    screen = Wellcome_screen(master=root)
+    screen.show_screen()
     root.mainloop()
 
 def second_screen():
@@ -45,8 +27,6 @@ def second_screen():
     a.pack(expand=True)
     root.geometry(Consts.SCREEN_SIZE)
     root.configure(background=Consts.COLOR_SECONDARY)
-    # btn = tk.Button(root, text="barcode is given")
-    # btn.grid(column=1, row=0)
     root.mainloop()
 
 def show_picture():
