@@ -17,7 +17,6 @@ class Application(tk.Tk):
         self.error = Error_screen(master=self)
         self.result = Result_screen(master=self, color=None, url=None)
 
-
     def run(self):
         self.wellcome.show_screen()
         self.bind('<Return>', self.func1)
@@ -47,6 +46,7 @@ class Application(tk.Tk):
         self.waitting.hide_screen()
         if self.genarate_success():
             self.configure(background=Consts.COLOR_BG_RESULT)
+            self.result.update_result(name=':)', color='green', new_url=None)
             self.result.show_screen()
             self.after(Consts.RESULT_TIMEOUT, self.hide_result_after_sleep)
         else:
