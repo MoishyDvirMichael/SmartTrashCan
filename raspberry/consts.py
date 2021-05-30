@@ -7,6 +7,11 @@ class Consts:
     # size of raspberry screen.
     SCREEN_SIZE = '480x320'
 
+    # size of result image.
+    IMAGE_HEIGHT_SIZE = 250
+    IMAGE_WIDTH_SIZE = 250
+    RESULT_IMAGE_SIZE = (IMAGE_WIDTH_SIZE, IMAGE_HEIGHT_SIZE)
+
     # number of seconds the result/error are presented in the screem.
     RESULT_TIMEOUT = 10
     ERROR_TIMEOUT = 10

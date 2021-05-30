@@ -1,6 +1,6 @@
 import tkinter as tk
-from PIL import Image, ImageTk
 from consts import Consts
+from image_conf import Image_to_show
 
 
 class Result_screen(tk.Frame):
@@ -19,12 +19,8 @@ class Result_screen(tk.Frame):
                                    fg=Consts.COLOR_TEXT_RESULT)
         self.text_label.grid()
         # Configure the image label.
-        image = Image.open('default_image.png')
-        image = image.resize((250,250))
-        test = ImageTk.PhotoImage(image)
-        self.image_label = tk.Label(self, image=test)
-        self.image_label.image = test
-        self.image_label.grid()
+        self.image_label = Image_to_show(master=self, url=None)
+        self.image_label.show_image()
         # configure the recycling message.
         self.recycling_label = tk.Label(self,
                                         text="There is no data about recycling.",
@@ -38,6 +34,3 @@ class Result_screen(tk.Frame):
 
     def hide_screen(self):
         self.pack_forget()
-
-    def update_text(self, text):
-        self.my_label['text'] = text
