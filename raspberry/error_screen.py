@@ -9,7 +9,6 @@ class Error_screen(tk.Frame):
     """
     def __init__(self, master: tk.Tk):
         super().__init__(master, bg=Consts.COLOR_BG_ERROR)
-        self.timeout = Consts.ERROR_TIMEOUT
         self.error_label = tk.Label(self,
                                     text="The product does not exist in the system",
                                     font=("Arial Bold", 15),
@@ -28,6 +27,3 @@ class Error_screen(tk.Frame):
 
     def hide_screen(self):
         self.pack_forget()
-
-    def update_text(self, text):
-        self.my_label['text'] = text

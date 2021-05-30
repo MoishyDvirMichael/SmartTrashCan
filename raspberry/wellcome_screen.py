@@ -9,6 +9,7 @@ class Wellcome_screen(tk.Frame):
     """
     def __init__(self, master: tk.Tk):
         super().__init__(master, bg=Consts.COLOR_BG_WELLCOME)
+        
         self.wellcome_label = tk.Label(self, text="Wellcome!",
                                        font=("Arial Bold", 30),
                                        bg=Consts.COLOR_BG_WELLCOME,
@@ -23,8 +24,8 @@ class Wellcome_screen(tk.Frame):
     def show_screen(self):
         self.pack(expand=True)
 
+    """def show_screen(self, timeout):
+        self.after(timeout, self.pack)"""
+
     def hide_screen(self):
         self.pack_forget()
-
-    def update_text(self, text):
-        self.my_label['text'] = text

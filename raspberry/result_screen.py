@@ -8,9 +8,8 @@ class Result_screen(tk.Frame):
     Class for the result screen in the application.
     It shows data about the prodact (name, image) and offer recycling bin color.
     """
-    def __init__(self, master: tk.Tk, url=None):
+    def __init__(self, master: tk.Tk, color=None, url=None):
         super().__init__(master, bg=Consts.COLOR_BG_RESULT)
-        self.timeout = Consts.RESULT_TIMEOUT
         # Configure the result text.
         self.text_label = tk.Label(self,
                                    text="The list is updated saccessfully!",
@@ -22,8 +21,12 @@ class Result_screen(tk.Frame):
         self.image_label = Image_to_show(master=self, url=url)
         self.image_label.show_image()
         # configure the recycling message.
+        if not color == None:
+            result_text = f'This prodact should be put into {color} recycling bin'
+        else:
+            result_text = "There is no data about recycling."
         self.recycling_label = tk.Label(self,
-                                        text="There is no data about recycling.",
+                                        text=result_text,
                                         font=("Arial Bold", 10),
                                         bg=Consts.COLOR_BG_RESULT,
                                         fg=Consts.COLOR_TEXT_RESULT)
@@ -39,7 +42,7 @@ class Result_screen(tk.Frame):
         self.text_label['text'] = message
         self.image_label = Image_to_show(master=self, url=new_url)
         self.image_label.show_image()
-        if color == None:
+        if not color == None:
             self.recycling_label['text'] = f'This prodact should be put into {color} recycling bin'
         else:
             self.recycling_label['text'] = "There is no data about recycling."

@@ -12,9 +12,12 @@ class Consts:
     IMAGE_WIDTH_SIZE = 250
     RESULT_IMAGE_SIZE = (IMAGE_WIDTH_SIZE, IMAGE_HEIGHT_SIZE)
 
+    # The timeout use operator 'after' that schedules a function to be called
+    # after a specified time in milliseconds, so this macro translates it.
+    SECOND = 1000 
     # number of seconds the result/error are presented in the screem.
-    RESULT_TIMEOUT = 10
-    ERROR_TIMEOUT = 10
+    RESULT_TIMEOUT = 5 * SECOND
+    ERROR_TIMEOUT = 5 * SECOND
 
     # colors for Recycling Bin types. 
     PLASTIC_RECYCLING_BIN_COLOR = 'orange'
