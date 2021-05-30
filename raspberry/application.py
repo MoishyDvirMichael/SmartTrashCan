@@ -13,7 +13,7 @@ class Application(tk.Tk):
         self.configure(background=Consts.COLOR_BG_WELLCOME)
 
         self.wellcome = Wellcome_screen(master=self)
-        self.waitting = Waitting_screen(master=self)
+        self.waitting = Waitting_screen(master=self, barcod=0)
         self.error = Error_screen(master=self)
         self.result = Result_screen(master=self, color=None, url=None)
 
@@ -37,6 +37,7 @@ class Application(tk.Tk):
 
     def func1(self, event):
         self.unbind('<Return>')
+        self.waitting.update_text(barcod=0)
         self.wellcome.hide_screen()
         self.waitting.show_screen()
         self.bind('<Return>', self.func2)
