@@ -36,7 +36,7 @@ def show_picture():
     root = tk.Tk()
     root.geometry(Consts.SCREEN_SIZE)
     root.configure(background=Consts.COLOR_DIVIDER)
-    screen = Result_screen(master=root)
+    screen = Result_screen(master=root, url=None)
     screen.show_screen()
     root.mainloop()
 
