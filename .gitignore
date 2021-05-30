@@ -68,5 +68,7 @@ functions/package-lock.json
 functions/.vscode/launch.json
 functions/package-lock.json
 .gitignore
-scripts/.vscode/
+.vscode/
+*/.vscode/
 .idea/workspace.xml
+raspberry/__pycache__/*.cpython-39.pyc
