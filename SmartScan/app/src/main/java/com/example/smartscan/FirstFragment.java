@@ -12,6 +12,8 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -84,12 +86,49 @@ public class FirstFragment extends Fragment {
 
 
         scanWifi();
+
+        binding.generateBarcode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                barCodeButton();
+            }
+        });
+        wifi_password.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                checkFieldsForEmptyValues();
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                checkFieldsForEmptyValues();
+            }
+        });
+        binding.firstFragmentNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavHostFragment.findNavController(FirstFragment.this)
+                        .navigate(R.id.action_FirstFragment_to_SecondFragment);
+            }
+        });
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
         wifi_ssid.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                ((TextView) parent.getChildAt(0)).setTextColor(Color.BLACK);
-                ((TextView) parent.getChildAt(0)).setTextSize(16);
-                ((TextView) parent.getChildAt(0)).setGravity(Gravity.CENTER);
+                if(parent.getChildAt(0) != null){
+                    ((TextView) parent.getChildAt(0)).setTextColor(Color.BLACK);
+                    ((TextView) parent.getChildAt(0)).setTextSize(16);
+                    ((TextView) parent.getChildAt(0)).setGravity(Gravity.CENTER);
+                }
             }
 
             @Override
@@ -97,18 +136,24 @@ public class FirstFragment extends Fragment {
 
             }
         });
-        binding.generateBarcode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                barCodeButton();
-            }
-        });
+    }
 
-        binding.firstFragmentNext.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onResume() {
+        super.onResume();
+        wifi_ssid.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onClick(View v) {
-                NavHostFragment.findNavController(FirstFragment.this)
-                        .navigate(R.id.action_FirstFragment_to_SecondFragment);
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(parent.getChildAt(0) != null){
+                    ((TextView) parent.getChildAt(0)).setTextColor(Color.BLACK);
+                    ((TextView) parent.getChildAt(0)).setTextSize(16);
+                    ((TextView) parent.getChildAt(0)).setGravity(Gravity.CENTER);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
     }
@@ -155,6 +200,19 @@ public class FirstFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
 
+        }
+    }
+
+
+    void checkFieldsForEmptyValues(){
+        Button b = (Button) binding.generateBarcode;
+
+        String s1 = wifi_password.getText().toString();
+
+        if(s1.equals("")){
+            b.setEnabled(false);
+        } else {
+            b.setEnabled(true);
         }
     }
 

@@ -8,13 +8,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.smartscan.databinding.FragmentSecondBinding;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
@@ -22,9 +25,14 @@ import com.google.zxing.common.BitMatrix;
 
 public class SecondFragment extends Fragment {
     private ImageView barcode_log_in;
-    private GoogleSignInAccount acct;
+    private FirebaseAuth acct;
 
     private FragmentSecondBinding binding;
+
+    @Override
+    public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public View onCreateView(
@@ -41,27 +49,32 @@ public class SecondFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         barcode_log_in = binding.barcodeLogIn;
-        acct = GoogleSignIn.getLastSignedInAccount(getActivity());
-
+        acct = FirebaseAuth.getInstance();
         binding.buttonSecond.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NavHostFragment.findNavController(SecondFragment.this)
-                        .navigate(R.id.action_SecondFragment_to_FirstFragment);
+                getActivity().finish();
+
             }
         });
+
+        barCodeButton();
+
     }
 
 
 
+
     public void barCodeButton(){
+        final int width = 300;
+        final int height = 200;
         MultiFormatWriter multiFormatWriter= new MultiFormatWriter();
         try {
-            BitMatrix bitMatrix = multiFormatWriter.encode(acct.getId(), BarcodeFormat.CODE_128,
-                    barcode_log_in.getWidth(),barcode_log_in.getHeight());
-            Bitmap bitmap = Bitmap.createBitmap(barcode_log_in.getWidth(), barcode_log_in.getHeight(), Bitmap.Config.RGB_565);
-            for(int i = 0; i < barcode_log_in.getWidth(); i++){
-                for(int j = 0; j< barcode_log_in.getHeight(); j++){
+            BitMatrix bitMatrix = multiFormatWriter.encode(acct.getUid(), BarcodeFormat.CODE_128,
+                    width,height);
+            Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+            for(int i = 0; i < width; i++){
+                for(int j = 0; j< height; j++){
                     bitmap.setPixel(i, j, bitMatrix.get(i,j)? Color.BLACK: Color.WHITE);
                 }
             }

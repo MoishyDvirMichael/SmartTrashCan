@@ -24,4 +24,5 @@
     <string name="your_wifi_name_ssid">Your WiFi Name (SSID)</string>
     <string name="your_wifi_passowrd">Your WiFi Passowrd</string>
     <string name="choose_your_wifi">Choose your Wifi</string>
+    <string name="done">Done</string>
 </resources>
