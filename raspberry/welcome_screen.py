@@ -2,23 +2,23 @@ import tkinter as tk
 from consts import Consts
 
 
-class Wellcome_screen(tk.Frame):
+class WelcomeScreen(tk.Frame):
     """
     Class for the first screen in the application.
-    It says wellcome and offers user to scan the barcod.
+    It says welcome and offers user to scan the barcod.
     """
     def __init__(self, master: tk.Tk):
-        super().__init__(master, bg=Consts.COLOR_BG_WELLCOME)
+        super().__init__(master, bg=Consts.COLOR_BG_WELCOME)
         
-        self.wellcome_label = tk.Label(self, text="Wellcome!",
+        self.welcome_label = tk.Label(self, text="Welcome!",
                                        font=("Arial Bold", 30),
-                                       bg=Consts.COLOR_BG_WELLCOME,
-                                       fg=Consts.COLOR_TEXT_WELLCOME)
-        self.wellcome_label.grid()
+                                       bg=Consts.COLOR_BG_WELCOME,
+                                       fg=Consts.COLOR_TEXT_WELCOME)
+        self.welcome_label.grid()
         self.instraction_label = tk.Label(self, text="Please enter a barcode.",
                                           font=("Arial Bold", 20),
-                                          bg=Consts.COLOR_BG_WELLCOME,
-                                          fg=Consts.COLOR_TEXT_WELLCOME)
+                                          bg=Consts.COLOR_BG_WELCOME,
+                                          fg=Consts.COLOR_TEXT_WELCOME)
         self.instraction_label.grid()
 
     def show_screen(self):

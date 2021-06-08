@@ -3,7 +3,7 @@ from consts import Consts
 from image_conf import Image_to_show
 
 
-class Result_screen(tk.Frame):
+class ResultScreen(tk.Frame):
     """
     Class for the result screen in the application.
     It shows data about the prodact (name, image) and offer recycling bin color.
@@ -40,12 +40,12 @@ class Result_screen(tk.Frame):
     def hide_screen(self):
         self.pack_forget()
 
-    def update_result(self, name, color, new_url):
+    def update_result(self, name, color, image_url=None):
         if name == None:
             name = ''
         self.text_label['text'] = f'The {name} product added to the shop list!'
         self.image_label.hide_image()
-        self.image_label = Image_to_show(master=self, url=new_url)
+        self.image_label = Image_to_show(master=self, url=image_url)
         self.image_label.show_image()
         if not color == None:
             self.recycling_label['fg'] = color

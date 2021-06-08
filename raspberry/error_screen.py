@@ -2,7 +2,7 @@ import tkinter as tk
 from consts import Consts
 
 
-class Error_screen(tk.Frame):
+class ErrorScreen(tk.Frame):
     """
     Class for the error message screen in the application.
     It prints error message and offers to add the object to the system using application.
@@ -16,7 +16,7 @@ class Error_screen(tk.Frame):
                                     fg=Consts.COLOR_TEXT_ERROR)
         self.error_label.grid()
         self.offer_label = tk.Label(self,
-                                    text="You can add it to the system using the app",
+                                    text="You can add it in the app",
                                     font=("Arial Bold", 15),
                                     bg=Consts.COLOR_BG_ERROR,
                                     fg=Consts.COLOR_TEXT_ERROR)

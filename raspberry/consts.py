@@ -26,14 +26,14 @@ class Consts:
     GLASS_RECYCLING_BIN_COLOR = 'green'
 
     # colors for the background screens.
-    COLOR_BG_WELLCOME = '#00BCD4'
-    COLOR_BG_WAITTING = '#00BCD4'
+    COLOR_BG_WELCOME = '#00BCD4'
+    COLOR_BG_WAITING = '#00BCD4'
     COLOR_BG_RESULT = '#BDBDBD'
     COLOR_BG_ERROR = '#212121'
 
     # colors for the background screens.
-    COLOR_TEXT_WELLCOME = '#212121'
-    COLOR_TEXT_WAITTING = '#212121'
+    COLOR_TEXT_WELCOME = '#212121'
+    COLOR_TEXT_WAITING = '#212121'
     COLOR_TEXT_RESULT = '#212121'
     COLOR_TEXT_ERROR = 'red'
 
