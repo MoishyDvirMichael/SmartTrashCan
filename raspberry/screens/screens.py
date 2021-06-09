@@ -1,3 +1,4 @@
-from welcome_screen import WelcomeScreen
-from searching_item_screen import SearchingItemScreen
-from text_screen import TextScreen
+from screens.welcome_screen import WelcomeScreen
+from screens.waiting_screen import WaitingScreen
+from screens.result_screen import ResultScreen
+from screens.error_screen import ErrorScreen

@@ -35,21 +35,22 @@ class ResultScreen(tk.Frame):
         self.recycling_label.grid()
 
     def show_screen(self):
+        self.master.configure(background=Consts.COLOR_BG_RESULT)
         self.pack(expand=True)
 
     def hide_screen(self):
         self.pack_forget()
 
-    def update_result(self, name, color, image_url=None):
+    def update_result(self, name, recycling_bin_type, image_url=None):
         if name == None:
             name = ''
         self.text_label['text'] = f'The {name} product added to the shop list!'
         self.image_label.hide_image()
         self.image_label = Image_to_show(master=self, url=image_url)
         self.image_label.show_image()
-        if not color == None:
-            self.recycling_label['fg'] = color
-            self.recycling_label['text'] = f'This prodact should be put into {color} recycling bin'
+        if not recycling_bin_type == None:
+            self.recycling_label['fg'] = recycling_bin_type.get('color_hex')
+            self.recycling_label['text'] = f'This prodact should be put into {recycling_bin_type.get("color_name")} recycling bin'
         else:
             self.recycling_label['text'] = "There is no data about recycling."
         

@@ -3,7 +3,12 @@ class Consts:
     """
     class for all constants application needs.
     """
-
+    @classmethod
+    def convert_color_to_tkinter(cls, color):
+        if color == None:
+            return None
+        return color.replace('0x', '#')
+    
     # size of raspberry screen.
     SCREEN_SIZE = '480x320'
 
@@ -17,7 +22,7 @@ class Consts:
     SECOND = 1000 
     # number of seconds the result/error are presented in the screem.
     RESULT_TIMEOUT = 5 * SECOND
-    ERROR_TIMEOUT = 5 * SECOND
+    ERROR_TIMEOUT = 10
 
     # colors for Recycling Bin types. 
     PLASTIC_RECYCLING_BIN_COLOR = 'orange'
