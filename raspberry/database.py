@@ -34,13 +34,12 @@ class DB:
 
     @classmethod
     def get_recycling_bin_type(cls, doc_ref):
-        if doc_ref == None:
-            return None
         try:
+            if doc_ref == None:
+                return Consts.DEFAULT_RECYCLING_BIN_TYPE
             doc = doc_ref.get()
             recycling_bin_type = doc._data
             recycling_bin_type['color_hex'] = Consts.convert_color_to_tkinter(recycling_bin_type.get('color_hex'))
-            # doc['color_hex'] = Consts.convert_color_to_tkinter('0xFFFFFF')
             return recycling_bin_type
         except:
-            return None
+            return Consts.DEFAULT_RECYCLING_BIN_TYPE

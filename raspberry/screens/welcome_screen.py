@@ -1,5 +1,6 @@
 import tkinter as tk
 from consts import Consts
+from led_strip import Led
 
 
 class WelcomeScreen(tk.Frame):
@@ -31,6 +32,7 @@ class WelcomeScreen(tk.Frame):
         self.name_entry.lower(self.frame)
 
     def show_screen(self):
+        Led.turn_off()
         self.name_entry.delete(0,'end')
         self.name_entry.focus()
         self.master.configure(background=Consts.COLOR_BG_WELCOME)
