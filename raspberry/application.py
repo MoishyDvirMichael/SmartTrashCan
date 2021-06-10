@@ -17,7 +17,7 @@ class Application(tk.Tk):
         
         DB.init()
         Led.init()
-        
+
         self.geometry(Consts.SCREEN_SIZE)
         self.configure(background=Consts.COLOR_BG_WELCOME)
 
@@ -27,10 +27,13 @@ class Application(tk.Tk):
         self.waiting_screen = WaitingScreen(master=self)
         self.error_screen = ErrorScreen(master=self)
         self.result_screen = ResultScreen(master=self)
+        self.empty_screen = EmptyScreen()
+
+        self.current_screen = self.empty_screen
+
 
     def run(self):
-        self.current_screen = self.welcome_screen
-        self.welcome_screen.show_screen()
+        self.change_screen(self.welcome_screen)
         self.mainloop()
 
     def procces_new_barcode_callback(self, event):
