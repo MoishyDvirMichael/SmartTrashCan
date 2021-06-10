@@ -49,7 +49,6 @@ class WelcomeScreen(tk.Frame):
         self.master.unbind('<Return>')
         barcode = self.str2int(self.__input_text.get()) #TODO check if the input is a number
         self.master.waiting_screen.update_barcode(barcode)
-        # self.master.__callback_done = threading.Event()
         self.doc_watch = DB.add_scanned_item(barcode, self.master.waiting_screen.item_was_found_callback)
         
         self.master.change_screen(self.master.waiting_screen)
@@ -60,39 +59,3 @@ class WelcomeScreen(tk.Frame):
             return int(text)
         except:
             return False
-    # def item_was_found_callback(self, doc_snapshot, changes, read_time):
-    #     for change in changes:
-    #         if change.type.name == 'MODIFIED':
-    #             print('item_was_found_callback')
-    #             self.t.cancel()
-    #             self.stop_listening_to_scanned_item()
-    #             if self.is_item_identified(change.document):
-    #                 self.item_was_identified(change.document)
-    #             else:
-    #                 self.item_was_not_identified(change.document._data['barcode'])
-    #             self.master.after(Consts.RESULT_TIMEOUT, self.master.change_screen, self.master.welcome_screen)
-
-    # def is_item_identified(self, doc)->bool:
-    #     res = doc._data.get('is_identified') == True
-    #     print(f'is_item_identified = {res}')
-    #     return res
-
-    # def item_was_not_found_callback(self, missing_barcode):
-    #     print('item_was_not_found_callback')
-    #     self.stop_listening_to_scanned_item()
-    #     self.master.change_screen(self.master.error_screen)
-    #     self.master.after(Consts.RESULT_TIMEOUT, self.master.change_screen, self.master.welcome_screen)
-
-    # def item_was_identified(self, doc):
-    #     print('item_was_identified')
-    #     self.master.update_product_details(doc)
-    #     self.master.change_screen(self.master.result_screen)
-    # def item_was_not_identified(self, missing_barcode):
-    #     print('item_was_not_identified')
-    #     self.master.change_screen(self.master.error_screen)
-
-    # def stop_listening_to_scanned_item(self):
-    #     try:
-    #         self.doc_watch.unsubscribe()
-    #     except:
-    #         pass
