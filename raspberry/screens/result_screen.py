@@ -1,6 +1,8 @@
 import tkinter as tk
 from consts import Consts
 from image_conf import Image_to_show
+from database import DB
+from led_strip import Led
 
 
 class ResultScreen(tk.Frame):
@@ -37,6 +39,7 @@ class ResultScreen(tk.Frame):
     def show_screen(self):
         self.master.configure(background=Consts.COLOR_BG_RESULT)
         self.pack(expand=True)
+        self.master.after(Consts.RESULT_TIMEOUT, self.master.change_screen, self.master.welcome_screen)
 
     def hide_screen(self):
         self.pack_forget()
@@ -53,4 +56,10 @@ class ResultScreen(tk.Frame):
             self.recycling_label['text'] = f'This prodact should be put into {recycling_bin_type.get("color_name")} recycling bin'
         else:
             self.recycling_label['text'] = "There is no data about recycling."
-        
+    
+    def update_product_details(self, doc):
+        product = DB.get_product(doc._data.get('product'))
+        recycling_bin_type = DB.get_recycling_bin_type(product.get('recycling_bin_type')) # TODO what if it's not defined?
+        Led.turn_on(recycling_bin_type['color_hex'])
+        self.master.result_screen.update_result(name=product.get('name'), recycling_bin_type=recycling_bin_type, image_url=product.get('image'))
+        pass

@@ -25,6 +25,7 @@ class ErrorScreen(tk.Frame):
     def show_screen(self):
         self.master.configure(background=Consts.COLOR_BG_ERROR)
         self.pack(expand=True)
+        self.master.after(Consts.RESULT_TIMEOUT, self.master.change_screen, self.master.welcome_screen)
 
     def hide_screen(self):
         self.pack_forget()

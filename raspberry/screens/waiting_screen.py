@@ -1,5 +1,6 @@
 import tkinter as tk
 from consts import Consts
+from threading import Timer
 
 
 class WaitingScreen(tk.Frame):
@@ -23,9 +24,47 @@ class WaitingScreen(tk.Frame):
 
     def show_screen(self):
         self.pack(expand=True)
+        self.t = Timer(Consts.ERROR_TIMEOUT, self.item_was_not_found_callback)
+        self.t.start()
+        
 
     def hide_screen(self):
         self.pack_forget()
 
     def update_barcode(self, barcod):
         self.input_label['text'] = f'Barcod {barcod} is scaned.'
+
+    def item_was_found_callback(self, doc_snapshot, changes, read_time):
+        for change in changes:
+            if change.type.name == 'MODIFIED':
+                print('item_was_found_callback')
+                self.t.cancel()
+                self.stop_listening_to_scanned_item()
+                if is_item_identified(change.document):
+                    self.item_was_identified(change.document)
+                else:
+                    self.item_was_not_identified(change.document._data['barcode'])
+
+    def item_was_not_found_callback(self):
+        print('item_was_not_found_callback')
+        self.stop_listening_to_scanned_item()
+        self.master.change_screen(self.master.error_screen)
+
+    def item_was_identified(self, doc):
+        print('item_was_identified')
+        self.master.result_screen.update_product_details(doc)
+        self.master.change_screen(self.master.result_screen)
+    def item_was_not_identified(self, missing_barcode):
+        print('item_was_not_identified')
+        self.master.change_screen(self.master.error_screen)
+
+    def stop_listening_to_scanned_item(self):
+        try:
+            self.master.welcome_screen.doc_watch.unsubscribe()
+        except:
+            pass
+
+def is_item_identified(doc) -> bool:
+    res = doc._data.get('is_identified') == True
+    print(f'is_item_identified = {res}')
+    return res
