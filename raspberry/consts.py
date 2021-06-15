@@ -9,6 +9,8 @@ class Consts:
             return None
         return color.replace('0x', '#')
     
+    DEFAULT_RECYCLING_BIN_TYPE = {'name':'unknown', 'color_name':'white', 'color_hex':'#FFFFFF'}
+
     # size of raspberry screen.
     SCREEN_SIZE = '480x320'
 
