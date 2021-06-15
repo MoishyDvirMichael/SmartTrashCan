@@ -26,11 +26,11 @@ class TryingToConnectScreen(tk.Frame):
         self.master.configure(background=Consts.COLOR_BG_WELCOME)
         self.pack(expand=True)
         self.master.update()
-        if ConnectToWifi.try_old_connection(self.master.get_data()['wifi']):
+        if self.master.get_wifi_length() == 0 or not ConnectToWifi.try_reconnect():
+            self.master.change_screen(self.master.scan_init_data_screen)
+        else:
             print('Successfully connected to the wifi')
             self.master.change_screen(self.master.welcome_screen)
-        else:
-            self.master.change_screen(self.master.scan_init_data_screen)
 
     def hide_screen(self):
         self.pack_forget()

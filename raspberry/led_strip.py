@@ -5,7 +5,8 @@ if platform.system().lower().startswith('lin'):
     import board
     import neopixel
 
-num_pixels = 31
+num_pixels = 29
+# num_pixels = 66
 
 
 class Led:
@@ -24,11 +25,11 @@ class Led:
         if platform.system().lower().startswith('win'):
             return
         if start == None:
-            cls.pixels[0:(num_pixels-1)] = (0, 0, 0)
+            cls.pixels[0:] = [(0, 0, 0)] * num_pixels
         elif start < 0 or start >= num_pixels or n < 1 or start+n > num_pixels:
             return
         else:
-            cls.pixels[start:(start + n - 1)] = (0, 0, 0)
+            cls.pixels[start:(start + n)] = [(0, 0, 0)] * n
 
     @classmethod
     def turn_on(cls, color, start:int = None, n:int = 1):
@@ -36,11 +37,11 @@ class Led:
             return
         color = cls.hex2color(color)
         if start == None:
-            cls.pixels[0:(num_pixels-1)] = color
+            cls.pixels[0:] = [color] * num_pixels
         elif start < 0 or start >= num_pixels or n < 1 or start+n > num_pixels:
             return
         else:
-            cls.pixels[start:(start + n - 1)] = color
+            cls.pixels[start:(start + n)] = [color] * n
 
     @classmethod
     def hex2color(cls, hex:str):

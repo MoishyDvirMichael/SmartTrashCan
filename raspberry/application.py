@@ -5,6 +5,8 @@ from consts import Consts
 from database import DB
 from led_strip import Led
 from screens.screens import *
+from connect_to_wifi import ConnectToWifi
+
 
 
 class Application(tk.Tk):
@@ -64,6 +66,21 @@ class Application(tk.Tk):
         with open('data.json', 'w') as fp:
             json.dump(self._data, fp)
 
+    def get_data(self):
+        return self._data
+
+    def update_data(self, data: dict):
+        self._data['uid'] = data['uid']
+        self._data['wifi'].append({'name': data['wifi_name'], 'password': data['wifi_password']})
+        with open('data.json', 'w') as fp:
+            json.dump(self._data, fp)
+        ConnectToWifi.connect(data['wifi_name'], data['wifi_password'])
+
+    def get_uid(self):
+        return self._data['uid']
+    
+    def get_wifi_length(self):
+        return len(self._data['wifi'])
 
 def main():
     app = Application()

@@ -49,7 +49,7 @@ class WelcomeScreen(tk.Frame):
         self.master.unbind('<Return>')
         barcode = self.str2int(self.__input_text.get()) #TODO check if the input is a number
         self.master.waiting_screen.update_barcode(barcode)
-        self.doc_watch = DB.add_scanned_item(barcode, self.master.waiting_screen.item_was_found_callback)
+        self.doc_watch = DB.add_scanned_item(self.master.get_uid(), barcode, self.master.waiting_screen.item_was_found_callback)
         
         self.master.change_screen(self.master.waiting_screen)
         pass
