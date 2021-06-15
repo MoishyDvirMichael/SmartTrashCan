@@ -2,6 +2,7 @@ package com.example.smartscan;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,8 +67,8 @@ public class SecondFragment extends Fragment {
 
 
     public void barCodeButton(){
-        final int width = 300;
-        final int height = 200;
+        final int width = 350;
+        final int height = 150;
         MultiFormatWriter multiFormatWriter= new MultiFormatWriter();
         try {
             BitMatrix bitMatrix = multiFormatWriter.encode(acct.getUid(), BarcodeFormat.CODE_128,

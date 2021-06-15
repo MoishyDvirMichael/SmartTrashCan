@@ -15,13 +15,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 public class ProductListAdapter extends FirestoreRecyclerAdapter<Product, ProductListAdapter.ProductViewHolder>{
 
@@ -46,7 +46,19 @@ public class ProductListAdapter extends FirestoreRecyclerAdapter<Product, Produc
 
     @Override
     protected void onBindViewHolder(@NotNull ProductViewHolder holder, int position, @NotNull Product p) {
-        holder.ptext.setText(p.getBarcode());
+        if(p.getProduct() != null){
+            p.getProduct().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+                    if(task.getResult() != null){
+                        if(task.getResult().get("name") != null){
+                            String name = task.getResult().get("name").toString();
+                            holder.ptext.setText(name);
+                        }
+                    }
+                }
+            });
+        }
         context = holder.pimage.getContext();
 
         new DownloadImageTask((ImageView) holder.pimage)

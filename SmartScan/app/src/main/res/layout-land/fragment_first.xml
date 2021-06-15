@@ -69,24 +69,24 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintVertical_bias="0.1"
+        app:layout_constraintVertical_bias="0.05"
         app:layout_constraintTop_toBottomOf="@+id/wifi_password" />
 
     <ImageView
-        android:layout_width="300dp"
-        android:layout_height="200dp"
-        app:layout_constraintTop_toBottomOf="@id/generate_barcode"
+        android:id="@+id/barcode_image"
+        android:layout_width="400dp"
+        android:layout_height="150dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintVertical_bias="0.1"
-        android:id="@+id/barcode_image"
-        />
+        app:layout_constraintTop_toBottomOf="@id/wifi_password"
+        app:layout_constraintVertical_bias="0.1" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/done"
+        android:text="Next"
         android:id="@+id/first_fragment_next"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

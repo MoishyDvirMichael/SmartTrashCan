@@ -42,6 +42,9 @@ import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,6 +56,7 @@ public class FirstFragment extends Fragment {
     private ImageView barcode;
     private WifiManager wifiManager;
     private WifiReceiver wifiReceiver;
+    private FirebaseAuth acct;
 
 
 
@@ -84,13 +88,17 @@ public class FirstFragment extends Fragment {
             ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.ACCESS_FINE_LOCATION},0);
         }
 
-
+        acct = FirebaseAuth.getInstance();
         scanWifi();
 
         binding.generateBarcode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                barCodeButton();
+                try {
+                    barCodeButton();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
         wifi_password.addTextChangedListener(new TextWatcher() {
@@ -176,11 +184,16 @@ public class FirstFragment extends Fragment {
         binding = null;
     }
 
-    public void barCodeButton(){
+    public void barCodeButton() throws JSONException {
+        binding.generateBarcode.setVisibility(View.INVISIBLE);
+        JSONObject qr_json = new JSONObject();
+        qr_json.put("uid", acct.getUid());
+        qr_json.put("wifi_name", wifi_ssid.getSelectedItem().toString());
+        qr_json.put("wifi_password", wifi_password.getText().toString());
+        String qr_string = qr_json.toString();
         MultiFormatWriter multiFormatWriter= new MultiFormatWriter();
         try {
-            BitMatrix bitMatrix = multiFormatWriter.encode(wifi_ssid.getSelectedItem().toString() +
-                    ";" + wifi_password.getText().toString(), BarcodeFormat.CODE_128,
+            BitMatrix bitMatrix = multiFormatWriter.encode(qr_string, BarcodeFormat.QR_CODE,
                     barcode.getWidth(),barcode.getHeight());
             Bitmap bitmap = Bitmap.createBitmap(barcode.getWidth(), barcode.getHeight(), Bitmap.Config.RGB_565);
             for(int i = 0; i < barcode.getWidth(); i++){

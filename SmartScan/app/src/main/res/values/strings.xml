@@ -22,7 +22,8 @@
     <string name="connect_to_your_device">Connect Your Device to WiFi</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="your_wifi_name_ssid">Your WiFi Name (SSID)</string>
-    <string name="your_wifi_passowrd">Your WiFi Passowrd</string>
+    <string name="your_wifi_passowrd">Your WiFi Password</string>
     <string name="choose_your_wifi">Choose your Wifi</string>
+    <string name="connect_to_device">Connect to Device</string>
     <string name="done">Done</string>
 </resources>

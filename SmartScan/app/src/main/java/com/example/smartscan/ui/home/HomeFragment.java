@@ -47,7 +47,6 @@ public class HomeFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         recyclerView = root.findViewById(R.id.recycler_list_products);
-
         setProductList();
 
         final TextView textView = root.findViewById(R.id.text_home);
@@ -67,14 +66,14 @@ public class HomeFragment extends Fragment {
                 .collection("users")
                 .document(uuid)
                 .collection("scanned_products");
-        Query query = ref.orderBy("barcode", Query.Direction.ASCENDING);
+        Query query = ref.orderBy("barcode", Query.Direction.DESCENDING);
         options = new FirestoreRecyclerOptions.Builder<Product>()
                 .setQuery(query, Product.class)
                 .build();
         options.getSnapshots().addChangeEventListener(new ChangeEventListener() {
             @Override
             public void onChildChanged(@NonNull @NotNull ChangeEventType type, @NonNull @NotNull DocumentSnapshot snapshot, int newIndex, int oldIndex) {
-
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -90,6 +89,7 @@ public class HomeFragment extends Fragment {
         adapter = new ProductListAdapter(options);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        adapter.notifyDataSetChanged();
 
     }
 
