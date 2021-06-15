@@ -74,3 +74,5 @@ functions/package-lock.json
 raspberry/*/__pycache__/*.cpython-39.pyc
 raspberry/__pycache__/*.cpython-39.pyc
 data/smarttrashcan-credentials.json
+raspberry/data.json
+raspberry/wifi.xml
