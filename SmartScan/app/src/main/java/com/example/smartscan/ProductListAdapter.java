@@ -46,6 +46,7 @@ public class ProductListAdapter extends FirestoreRecyclerAdapter<Product, Produc
 
     @Override
     protected void onBindViewHolder(@NotNull ProductViewHolder holder, int position, @NotNull Product p) {
+        holder.ptext.setText("לא ידוע");
         if(p.getProduct() != null){
             p.getProduct().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -83,7 +84,6 @@ public class ProductListAdapter extends FirestoreRecyclerAdapter<Product, Produc
             super(itemView);
             ptext =itemView.findViewById(R.id.product_name_text);
             pimage = itemView.findViewById(R.id.product_image);
-            pdelete = itemView.findViewById(R.id.icon_delete_product);
         }
     }
 
