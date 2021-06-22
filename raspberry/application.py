@@ -19,6 +19,10 @@ class Application(tk.Tk):
         Led.init()
         
         self.geometry(Consts.SCREEN_SIZE)
+        self.fullscreen_state = Consts.FULLSCREEN_DEFAULT_STATE
+        self.bind("<F11>", self.toggle_fullscreen)
+        self.bind("<Escape>", self.end_fullscreen)
+        
         self.configure(background=Consts.COLOR_BG_WELCOME)
 
         self.scan_init_data_screen = ScanInitDataScreen(master=self)
@@ -81,6 +85,14 @@ class Application(tk.Tk):
     
     def get_wifi_length(self):
         return len(self._data['wifi'])
+
+    def toggle_fullscreen(self, event=None):
+        self.fullscreen_state = not self.fullscreen_state  # Just toggling the boolean
+        self.attributes("-fullscreen", self.fullscreen_state)
+
+    def end_fullscreen(self, event=None):
+        self.fullscreen_state = False
+        self.attributes("-fullscreen", self.fullscreen_state)
 
 def main():
     app = Application()
