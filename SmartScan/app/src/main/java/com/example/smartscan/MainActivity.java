@@ -53,7 +53,11 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-
+        if (!isSignedIn(mAuth)) {
+            // No user is signed in
+            startActivity(new Intent(getApplicationContext(), SignInActivity.class));
+            finish();
+        }
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

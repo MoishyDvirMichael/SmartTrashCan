@@ -41,6 +41,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
+
                 android:layout_toEndOf="@id/product_image"
                 android:layout_toRightOf="@id/product_image"
                 android:gravity="left"

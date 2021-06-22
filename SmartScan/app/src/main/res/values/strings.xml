@@ -26,4 +26,6 @@
     <string name="choose_your_wifi">Choose your Wifi</string>
     <string name="connect_to_device">Connect to Device</string>
     <string name="done">Done</string>
+    <string name="archive">Archive:</string>
+    <string name="regenerate">Regenerate</string>
 </resources>

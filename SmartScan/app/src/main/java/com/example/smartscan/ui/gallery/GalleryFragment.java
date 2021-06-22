@@ -130,6 +130,7 @@ public class GalleryFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+
         wifi_ssid.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -177,6 +178,7 @@ public class GalleryFragment extends Fragment {
         ArrayAdapter<String> wifiAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, wifi_names);
         wifiAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         wifi_ssid.setAdapter(wifiAdapter);
+        wifiAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -186,7 +188,7 @@ public class GalleryFragment extends Fragment {
     }
 
     public void barCodeButton() throws JSONException {
-        binding.generateBarcode.setVisibility(View.INVISIBLE);
+        binding.generateBarcode.setText(R.string.regenerate);
         JSONObject qr_json = new JSONObject();
         qr_json.put("uid", acct.getUid());
         qr_json.put("wifi_name", wifi_ssid.getSelectedItem().toString());

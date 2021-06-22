@@ -2,6 +2,7 @@ package com.example.smartscan;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -9,7 +10,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,9 +17,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
-import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -32,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.InputStream;
 import java.util.Objects;
 
-public class ProductListAdapter extends FirestoreRecyclerAdapter<Product, ProductListAdapter.ProductViewHolder>{
+public class ArchivedListAdapter extends FirestoreRecyclerAdapter<Product, ArchivedListAdapter.ProductViewHolder>{
 
     private Context context;
     private FirestoreRecyclerOptions options;
@@ -45,7 +43,7 @@ public class ProductListAdapter extends FirestoreRecyclerAdapter<Product, Produc
      *
      * @param options
      */
-    public ProductListAdapter(@NonNull FirestoreRecyclerOptions<Product> options) {
+    public ArchivedListAdapter(@NonNull FirestoreRecyclerOptions<Product> options) {
         super(options);
         this.options = options;
     }
@@ -59,6 +57,7 @@ public class ProductListAdapter extends FirestoreRecyclerAdapter<Product, Produc
     @Override
     protected void onBindViewHolder(@NotNull ProductViewHolder holder, int position, @NotNull Product p) {
         db = FirebaseFirestore.getInstance();
+        holder.ptext.setPaintFlags(holder.ptext.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         holder.ptext.setText("");
         holder.ptext.setEnabled(false);
         Drawable originalDrawable = holder.ptext.getBackground();
@@ -112,7 +111,7 @@ public class ProductListAdapter extends FirestoreRecyclerAdapter<Product, Produc
     @NotNull
     @Override
     public ProductViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_list_row,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.archive_list_row,parent,false);
         return new ProductViewHolder(view);
     }
 

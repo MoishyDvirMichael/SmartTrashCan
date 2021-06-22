@@ -5,24 +5,26 @@ import com.google.firebase.firestore.DocumentReference;
 import java.util.Date;
 
 public class Product {
-    private String barcode;
+    private Long barcode;
+    private String name;
     private Date date_added;
     private Boolean is_identified;
     private DocumentReference product;
 
     public Product(){}
-    public Product(String code, Date date, Boolean is_identified, DocumentReference ref){
+    public Product(Long code, String name, Date date, Boolean is_identified, DocumentReference ref){
         this.barcode = code;
+        this.name = name;
         this.date_added = date;
         this.is_identified = is_identified;
         this.product = ref;
     }
 
-    public String getBarcode() {
+    public Long getBarcode() {
         return barcode;
     }
 
-    public void setBarcode(String barcode) {
+    public void setBarcode(Long barcode) {
         this.barcode = barcode;
     }
 
@@ -44,6 +46,14 @@ public class Product {
 
     public Date getDate_added() {
         return date_added;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void setDate_added(Date date_added) {

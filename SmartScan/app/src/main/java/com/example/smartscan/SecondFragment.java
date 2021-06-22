@@ -67,8 +67,8 @@ public class SecondFragment extends Fragment {
 
 
     public void barCodeButton(){
-        final int width = 350;
-        final int height = 150;
+        final int width = 300;
+        final int height = 300;
         MultiFormatWriter multiFormatWriter= new MultiFormatWriter();
         try {
             BitMatrix bitMatrix = multiFormatWriter.encode(acct.getUid(), BarcodeFormat.CODE_128,
