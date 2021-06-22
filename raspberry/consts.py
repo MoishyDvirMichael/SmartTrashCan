@@ -11,9 +11,12 @@ class Consts:
     
     DEFAULT_RECYCLING_BIN_TYPE = {'name':'unknown', 'color_name':'white', 'color_hex':'#FFFFFF'}
 
+    DATABASE_TIMEOUT = 5
+
     # size of raspberry screen.
     SCREEN_SIZE = '480x320'
-
+    FULLSCREEN_DEFAULT_STATE = False
+    
     # size of result image.
     IMAGE_HEIGHT_SIZE = 250
     IMAGE_WIDTH_SIZE = 250
