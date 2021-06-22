@@ -47,6 +47,7 @@ class Application(tk.Tk):
         self.current_screen.hide_screen()
         self.current_screen = new_screen
         self.current_screen.show_screen(*arg)
+        self.update()
         
 
     def read_data_from_file(self):

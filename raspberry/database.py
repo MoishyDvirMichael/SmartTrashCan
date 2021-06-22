@@ -15,7 +15,7 @@ class DB:
     def add_scanned_item(cls, uid, barcode, callback):
         try:
             return cls.__add_scanned_item(uid, barcode, callback)
-        except:
+        except Exception as ex:
             return None
 
     @classmethod

@@ -1,6 +1,7 @@
 from functools import wraps
 import errno
 import os
+import platform
 import signal
 
 class TimeoutError(Exception):
@@ -12,12 +13,14 @@ def timeout(seconds=10, error_message=os.strerror(errno.ETIME)):
             raise TimeoutError(error_message)
 
         def wrapper(*args, **kwargs):
-            signal.signal(signal.SIGALRM, _handle_timeout)
-            signal.alarm(seconds)
+            if platform.system().lower().startswith('lin'):
+                signal.signal(signal.SIGALRM, _handle_timeout)
+                signal.alarm(seconds)
             try:
                 result = func(*args, **kwargs)
             finally:
-                signal.alarm(0)
+                if platform.system().lower().startswith('lin'):
+                    signal.alarm(0)
             return result
 
         return wraps(func)(wrapper)

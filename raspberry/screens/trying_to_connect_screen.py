@@ -26,7 +26,7 @@ class TryingToConnectScreen(tk.Frame):
         self.master.configure(background=Consts.COLOR_BG_WELCOME)
         self.pack(expand=True)
         self.master.update()
-        if self.master.get_wifi_length() == 0 or not ConnectToWifi.try_reconnect():
+        if (ConnectToWifi.is_connected()) == False and (self.master.get_wifi_length() == 0 or not ConnectToWifi.try_reconnect()):
             self.master.change_screen(self.master.scan_init_data_screen)
         else:
             print('Successfully connected to the wifi')
