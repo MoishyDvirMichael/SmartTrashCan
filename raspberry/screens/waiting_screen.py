@@ -38,7 +38,7 @@ class WaitingScreen(tk.Frame):
         self.dots.start()
 
     def dots_cycle(self, barcode):
-        max_dots = 0
+        max_dots = 4
         dots = 0
         t = currentThread()
         print('dots:')
