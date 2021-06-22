@@ -52,6 +52,7 @@ class WelcomeScreen(tk.Frame):
         watch = DB.add_scanned_item(self.master.get_uid(), barcode, self.master.waiting_screen.item_was_found_callback)
         if watch == None:
             print('Timeout Error in DB.add_scanned_item()')
+            self.master.waiting_screen.dots.stop = True
             self.master.change_screen(self.master.trying_to_connect_screen)
         else:
             self.doc_watch = watch

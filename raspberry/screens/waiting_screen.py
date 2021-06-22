@@ -1,22 +1,23 @@
 import tkinter as tk
 from consts import Consts
 from threading import Timer
-
+import time
+from threading import Thread, currentThread
 
 class WaitingScreen(tk.Frame):
     """
     Class for the second screen in the application.
     It saves the screen while server updates the shop list.
     """
-    def __init__(self, master: tk.Tk, barcod=0):
+    def __init__(self, master: tk.Tk, barcode=0):
         super().__init__(master, bg=Consts.COLOR_BG_WAITING)
         self.input_label = tk.Label(self,
-                                    text=f'Barcod {barcod} is scaned.',
+                                    text=f'Searching {barcode}...',
                                     font=("Arial Bold", 25),
                                     bg=Consts.COLOR_BG_WAITING,
                                     fg=Consts.COLOR_TEXT_WAITING)
         self.input_label.grid()
-        self.my_label = tk.Label(self, text="Please wait while it is being updated in the shop list.",
+        self.my_label = tk.Label(self, text="Please wait while it is being updated in the shopping list",
                                  font=("Arial Bold", 13),
                                  bg=Consts.COLOR_BG_WAITING,
                                  fg=Consts.COLOR_TEXT_WAITING)
@@ -31,12 +32,27 @@ class WaitingScreen(tk.Frame):
     def hide_screen(self):
         self.pack_forget()
 
-    def update_barcode(self, barcod):
-        self.input_label['text'] = f'Barcod {barcod} is scaned.'
+    def update_barcode(self, barcode):
+        self.input_label['text'] = f'Searching {barcode}...'
+        self.dots = Thread(target=self.dots_cycle, args=(barcode,))
+        self.dots.start()
+
+    def dots_cycle(self, barcode):
+        max_dots = 0
+        dots = 0
+        t = currentThread()
+        print('dots:')
+        while getattr(t, "stop", False) == False:
+            dots = (dots + 1 ) % max_dots
+            self.input_label['text'] = f'Searching {barcode}' + '.' * dots + ' ' * (max_dots - dots)
+            self.master.update()
+            time.sleep(0.15)
+
 
     def item_was_found_callback(self, doc_snapshot, changes, read_time):
         for change in changes:
             if change.type.name == 'MODIFIED':
+                self.dots.stop = True
                 print('item_was_found_callback')
                 self.t.cancel()
                 self.stop_listening_to_scanned_item()
