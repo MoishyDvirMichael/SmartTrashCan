@@ -23,9 +23,14 @@ import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -62,14 +67,14 @@ public class ProductListAdapter extends FirestoreRecyclerAdapter<Product, Produc
         holder.ptext.setText("");
         holder.ptext.setEnabled(false);
         Drawable originalDrawable = holder.ptext.getBackground();
-
         holder.ptext.setBackgroundResource(android.R.color.transparent);
-
         holder.pimage.setImageResource(R.drawable.ic_baseline_fastfood_24);
 
         if(p.getIs_identified() != null && p.getIs_identified() == false){
-            holder.ptext.setText("לא ידוע");
-            holder.ptext.setEnabled(false);
+            if(p.getManual_name() == null) {
+                holder.ptext.setText("לא ידוע");
+            }
+            holder.ptext.setEnabled(true);
             holder.ptext.setSingleLine();
             holder.ptext.setBackground(originalDrawable);
             holder.ptext.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -79,7 +84,18 @@ public class ProductListAdapter extends FirestoreRecyclerAdapter<Product, Produc
                         InputMethodManager imm = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                         holder.ptext.clearFocus();
-                        p.setName(holder.ptext.getText().toString());
+                        p.setManual_name(holder.ptext.getText().toString());
+                        db.collection("users").document(FirebaseAuth.getInstance().getUid())
+                                .collection("scanned_products").whereEqualTo("barcode", p.getBarcode())
+                                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                for(DocumentSnapshot ds : queryDocumentSnapshots.getDocuments()){
+                                    DocumentReference ref = ds.getReference();
+                                    ref.update("manual_name", p.getManual_name());
+                                }
+                            }
+                        });
                         Toast.makeText(v.getContext(), holder.ptext.getText(), Toast.LENGTH_SHORT).show();
                     }
                     return true;
@@ -87,14 +103,16 @@ public class ProductListAdapter extends FirestoreRecyclerAdapter<Product, Produc
             });
         }
 
+
+
         if(p.getProduct() != null){
             p.getProduct().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
                     if(task.getResult() != null){
-                        if(task.getResult().get("name") != null) {
+                        if(task.getResult().get("name") != null && p.getManual_name() == null) {
                             String name = Objects.requireNonNull(task.getResult().get("name")).toString();
-                            p.setName(name);
+                            p.setManual_name(name);
                             holder.ptext.setText(name);
                         }
                         if(task.getResult().get("image") != null){
@@ -105,6 +123,8 @@ public class ProductListAdapter extends FirestoreRecyclerAdapter<Product, Produc
                     }
                 }
             });
+        } else{
+            holder.ptext.setText(p.getManual_name());
         }
 
     }

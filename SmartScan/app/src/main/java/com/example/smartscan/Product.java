@@ -6,7 +6,7 @@ import java.util.Date;
 
 public class Product {
     private Long barcode;
-    private String name;
+    private String manual_name;
     private Date date_added;
     private Boolean is_identified;
     private DocumentReference product;
@@ -14,7 +14,7 @@ public class Product {
     public Product(){}
     public Product(Long code, String name, Date date, Boolean is_identified, DocumentReference ref){
         this.barcode = code;
-        this.name = name;
+        this.manual_name = name;
         this.date_added = date;
         this.is_identified = is_identified;
         this.product = ref;
@@ -48,12 +48,12 @@ public class Product {
         return date_added;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setManual_name(String manual_name) {
+        this.manual_name = manual_name;
     }
 
-    public String getName() {
-        return name;
+    public String getManual_name() {
+        return manual_name;
     }
 
     public void setDate_added(Date date_added) {

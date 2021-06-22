@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.smartscan.FirstFragment;
 import com.example.smartscan.R;
 import com.example.smartscan.databinding.FragmentFirstBinding;
+import com.example.smartscan.databinding.FragmentGalleryBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -51,7 +53,7 @@ import java.util.List;
 
 public class GalleryFragment extends Fragment {
 
-    private FragmentFirstBinding binding;
+    private FragmentGalleryBinding binding;
     private Spinner wifi_ssid;
     private EditText wifi_password;
     private ImageView barcode;
@@ -68,7 +70,7 @@ public class GalleryFragment extends Fragment {
             Bundle savedInstanceState
     ) {
 
-        binding = FragmentFirstBinding.inflate(inflater, container, false);
+        binding = FragmentGalleryBinding.inflate(inflater, container, false);
         return binding.getRoot();
 
     }
@@ -91,7 +93,6 @@ public class GalleryFragment extends Fragment {
 
         acct = FirebaseAuth.getInstance();
         scanWifi();
-
         binding.generateBarcode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,12 +101,12 @@ public class GalleryFragment extends Fragment {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                binding.firstFragmentNext.setVisibility(View.VISIBLE);
             }
         });
         wifi_password.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                checkFieldsForEmptyValues();
             }
 
             @Override
@@ -115,7 +116,6 @@ public class GalleryFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                checkFieldsForEmptyValues();
             }
         });
         binding.firstFragmentNext.setOnClickListener(new View.OnClickListener() {
@@ -125,6 +125,7 @@ public class GalleryFragment extends Fragment {
                             .navigate(R.id.action_GalleryFragment_to_HomeFragment);
             }
         });
+        binding.firstFragmentNext.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -136,7 +137,7 @@ public class GalleryFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(parent.getChildAt(0) != null){
                     ((TextView) parent.getChildAt(0)).setTextColor(Color.BLACK);
-                    ((TextView) parent.getChildAt(0)).setTextSize(16);
+                    ((TextView) parent.getChildAt(0)).setTextSize(24);
                     ((TextView) parent.getChildAt(0)).setGravity(Gravity.CENTER);
                 }
             }

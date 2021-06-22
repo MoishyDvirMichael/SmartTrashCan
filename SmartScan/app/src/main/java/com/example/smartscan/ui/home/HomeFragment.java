@@ -122,7 +122,6 @@ public class HomeFragment extends Fragment {
 
     }
 
-
     private void setProductList() {
         CollectionReference ref = db
                 .collection("users")
@@ -327,6 +326,7 @@ public class HomeFragment extends Fragment {
                                                     @Override
                                                     public void onSuccess(Void aVoid) {
                                                         Log.d(TAG, "DocumentSnapshot successfully deleted!");
+
                                                     }
                                                 })
                                                 .addOnFailureListener(new OnFailureListener() {
@@ -335,6 +335,7 @@ public class HomeFragment extends Fragment {
                                                         Log.w(TAG, "Error deleting document", e);
                                                     }
                                                 });
+
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {
