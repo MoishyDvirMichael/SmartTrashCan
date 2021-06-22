@@ -49,10 +49,13 @@ class WelcomeScreen(tk.Frame):
         self.master.unbind('<Return>')
         barcode = self.str2int(self.__input_text.get()) #TODO check if the input is a number
         self.master.waiting_screen.update_barcode(barcode)
-        self.doc_watch = DB.add_scanned_item(self.master.get_uid(), barcode, self.master.waiting_screen.item_was_found_callback)
-        
-        self.master.change_screen(self.master.waiting_screen)
-        pass
+        watch = DB.add_scanned_item(self.master.get_uid(), barcode, self.master.waiting_screen.item_was_found_callback)
+        if watch == None:
+            print('Timeout Error in DB.add_scanned_item()')
+            self.master.change_screen(self.master.trying_to_connect_screen)
+        else:
+            self.doc_watch = watch
+            self.master.change_screen(self.master.waiting_screen)
 
     def str2int(self, text):
         try: 

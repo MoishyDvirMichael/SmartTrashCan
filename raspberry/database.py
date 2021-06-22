@@ -2,6 +2,7 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 from consts import Consts
+from timeout import timeout
 
 class DB:
     @classmethod
@@ -12,17 +13,21 @@ class DB:
     
     @classmethod
     def add_scanned_item(cls, uid, barcode, callback):
+        try:
+            return cls.__add_scanned_item(uid, barcode, callback)
+        except:
+            return None
+
+    @classmethod
+    @timeout(Consts.DATABASE_TIMEOUT)
+    def __add_scanned_item(cls, uid, barcode, callback):
         doc_ref = cls.db.collection('users').document(uid).collection('scanned_products')
-        # doc_ref = cls.db.collection('users').document('moishy').collection('scanned_products')
-        # doc_ref = cls.db.collection('temp')
         doc_id = doc_ref.add({
             'barcode': barcode,
             'date_added': firestore.SERVER_TIMESTAMP
         })
 
         doc_ref = cls.db.collection('users').document(uid).collection('scanned_products').document(doc_id[1].id)
-        # doc_ref = cls.db.collection('users').document('moishy').collection('scanned_products').document(doc_id[1].id)
-        # doc_ref = cls.db.collection('temp').document(doc_id[1].id)
         doc_watch = doc_ref.on_snapshot(callback)
         return doc_watch
 

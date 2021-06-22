@@ -48,12 +48,13 @@ class WaitingScreen(tk.Frame):
     def item_was_not_found_callback(self):
         print('item_was_not_found_callback')
         self.stop_listening_to_scanned_item()
-        self.master.change_screen(self.master.error_screen)
+        self.master.change_screen(self.master.trying_to_connect_screen)
 
     def item_was_identified(self, doc):
         print('item_was_identified')
         self.master.result_screen.update_product_details(doc)
         self.master.change_screen(self.master.result_screen)
+    
     def item_was_not_identified(self, missing_barcode):
         print('item_was_not_identified')
         self.master.change_screen(self.master.error_screen)
