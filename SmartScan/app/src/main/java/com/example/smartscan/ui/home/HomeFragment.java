@@ -267,43 +267,29 @@ public class HomeFragment extends Fragment {
                             @Override
                             public void onClick(int pos) {
                                 Long barcode = adapter1.getItem(viewHolder.getAdapterPosition()).getBarcode();
-                                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                                builder.setMessage("Are you sure you want to restore this product?")
-                                        .setTitle("Restore");
-                                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        final FirebaseFirestore db = FirebaseFirestore.getInstance();
-                                        db.collection("users")
-                                                .document(mAuth.getUid())
-                                                .collection("archived_products")
-                                                .whereEqualTo("barcode", barcode)
-                                                .get()
-                                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                        if (task.isSuccessful()) {
-                                                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                                                DocumentReference to_delete = document.getReference();
-                                                                DocumentReference dest = db.collection("users")
-                                                                        .document(mAuth.getUid())
-                                                                        .collection("scanned_products")
-                                                                        .document();
-                                                                moveFirestoreDocument(to_delete, dest);
-                                                            }
-                                                        } else {
-                                                            Log.d(TAG, "Error getting documents: ", task.getException());
-                                                        }
+                                final FirebaseFirestore db = FirebaseFirestore.getInstance();
+                                db.collection("users")
+                                        .document(mAuth.getUid())
+                                        .collection("archived_products")
+                                        .whereEqualTo("barcode", barcode)
+                                        .get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                                        DocumentReference to_delete = document.getReference();
+                                                        DocumentReference dest = db.collection("users")
+                                                                .document(mAuth.getUid())
+                                                                .collection("scanned_products")
+                                                                .document();
+                                                        moveFirestoreDocument(to_delete, dest);
                                                     }
-                                                });
-                                    }
-                                });
-                                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.dismiss();
-                                    }
-                                });
-                                AlertDialog dialog = builder.create();
-                                dialog.show();
+                                                } else {
+                                                    Log.d(TAG, "Error getting documents: ", task.getException());
+                                                }
+                                            }
+                                        });
                             }
                         }
                 ));
