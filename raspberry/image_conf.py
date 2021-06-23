@@ -30,7 +30,7 @@ class Image_to_show(tk.Label):
     
 
     def show_image(self):
-        self.grid()
+        self.grid(row=0, column=1, columnspan=2, rowspan=2, padx=10)
     
     def hide_image(self):
         self.grid_forget()
