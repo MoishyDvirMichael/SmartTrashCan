@@ -25,10 +25,15 @@ class Consts:
     SCREEN_SIZE = '480x320'
     FULLSCREEN_DEFAULT_STATE = False
     
-    # size of result image.
-    IMAGE_HEIGHT_SIZE = 280
-    IMAGE_WIDTH_SIZE = 280
+    # size of result image in pixels.
+    IMAGE_HEIGHT_SIZE = 250
+    IMAGE_WIDTH_SIZE = 250
     RESULT_IMAGE_SIZE = (IMAGE_WIDTH_SIZE, IMAGE_HEIGHT_SIZE)
+
+    # size of result screen texts in pixels.
+    RESULT_TEXTS_WIDTH = 180
+    RESULT_TEXTS_WIDTH_PAD = 10
+    RESULT_NAME_WIDTH = (RESULT_TEXTS_WIDTH + 2 * RESULT_TEXTS_WIDTH_PAD + IMAGE_WIDTH_SIZE)
 
     # The timeout use operator 'after' that schedules a function to be called
     # after a specified time in milliseconds, so this macro translates it.
@@ -48,8 +53,9 @@ class Consts:
     COLOR_BG_QR_SCAN = '#00ff00'
     COLOR_BG_WELCOME = '#00BCD4'
     COLOR_BG_WAITING = '#00BCD4'
-    COLOR_BG_RESULT = '#BDBDBD'
     COLOR_BG_ERROR = '#212121'
+    COLOR_BG_RESULT = '#BDBDBD'
+    COLOR_BG_RESULT_NAME = '#FFFFFF'
 
     # colors for the background screens.
     COLOR_TEXT_INTENET_CONNECT = '#212121'
