@@ -8,7 +8,7 @@ from threading import Timer
 
 class ScanInitDataScreen(tk.Frame):
     def __init__(self, master: tk.Tk):
-        super().__init__(master, bg=Consts.COLOR_BG_WELCOME)
+        super().__init__(master, bg=Consts.COLOR_BG_QR_SCAN)
 
         self._input_text = tk.StringVar()
 
@@ -17,8 +17,8 @@ class ScanInitDataScreen(tk.Frame):
 
         self.label = tk.Label(self, text="Scan the QR code from the app",
                               font=("Arial Bold", 20),
-                              bg=Consts.COLOR_BG_WELCOME,
-                              fg=Consts.COLOR_TEXT_WELCOME)
+                              bg=Consts.COLOR_BG_QR_SCAN,
+                              fg=Consts.COLOR_TEXT_QR_SCAN)
         self.label.grid(row=0)
 
         self.name_entry = tk.Entry(self, textvariable=self._input_text)
@@ -32,7 +32,7 @@ class ScanInitDataScreen(tk.Frame):
         Led.turn_off()
         self.name_entry.delete(0, 'end')
         self.name_entry.focus()
-        self.master.configure(background=Consts.COLOR_BG_WELCOME)
+        self.master.configure(background=Consts.COLOR_BG_QR_SCAN)
         self.master.bind('<Return>', self.procces_init_data_callback)
         self.pack(expand=True)
 

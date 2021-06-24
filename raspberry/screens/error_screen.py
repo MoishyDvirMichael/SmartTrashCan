@@ -16,7 +16,7 @@ class ErrorScreen(tk.Frame):
                                     fg=Consts.COLOR_TEXT_ERROR)
         self.error_label.grid()
         self.offer_label = tk.Label(self,
-                                    text="You can edit it in the app",
+                                    text="You can add it in the app",
                                     font=("Arial Bold", 15),
                                     bg=Consts.COLOR_BG_ERROR,
                                     fg=Consts.COLOR_TEXT_ERROR)

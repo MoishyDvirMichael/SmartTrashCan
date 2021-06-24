@@ -18,8 +18,8 @@ class Consts:
     FULLSCREEN_DEFAULT_STATE = False
     
     # size of result image.
-    IMAGE_HEIGHT_SIZE = 250
-    IMAGE_WIDTH_SIZE = 250
+    IMAGE_HEIGHT_SIZE = 280
+    IMAGE_WIDTH_SIZE = 280
     RESULT_IMAGE_SIZE = (IMAGE_WIDTH_SIZE, IMAGE_HEIGHT_SIZE)
 
     # The timeout use operator 'after' that schedules a function to be called
@@ -36,12 +36,16 @@ class Consts:
     GLASS_RECYCLING_BIN_COLOR = 'green'
 
     # colors for the background screens.
+    COLOR_BG_INTENET_CONNECT = '#00BCD4'
+    COLOR_BG_QR_SCAN = '#00ff00'
     COLOR_BG_WELCOME = '#00BCD4'
     COLOR_BG_WAITING = '#00BCD4'
     COLOR_BG_RESULT = '#BDBDBD'
     COLOR_BG_ERROR = '#212121'
 
     # colors for the background screens.
+    COLOR_TEXT_INTENET_CONNECT = '#212121'
+    COLOR_TEXT_QR_SCAN = '#212121'
     COLOR_TEXT_WELCOME = '#212121'
     COLOR_TEXT_WAITING = '#212121'
     COLOR_TEXT_RESULT = '#212121'
