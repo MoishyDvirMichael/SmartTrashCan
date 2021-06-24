@@ -1,3 +1,5 @@
+import platform
+from bidi import algorithm as bidialg
 
 class Consts:
     """
@@ -8,6 +10,12 @@ class Consts:
         if color == None:
             return None
         return color.replace('0x', '#')
+    
+    @classmethod
+    def reverse_hebrew_words(cls, text):
+        return bidialg.get_display(text) if platform.system().lower().startswith('lin') else text
+
+
     
     DEFAULT_RECYCLING_BIN_TYPE = {'name':'unknown', 'color_name':'white', 'color_hex':'#FFFFFF'}
 
