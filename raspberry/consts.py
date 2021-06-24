@@ -18,8 +18,8 @@ class Consts:
     FULLSCREEN_DEFAULT_STATE = False
     
     # size of result image.
-    IMAGE_HEIGHT_SIZE = 250
-    IMAGE_WIDTH_SIZE = 250
+    IMAGE_HEIGHT_SIZE = 280
+    IMAGE_WIDTH_SIZE = 280
     RESULT_IMAGE_SIZE = (IMAGE_WIDTH_SIZE, IMAGE_HEIGHT_SIZE)
 
     # The timeout use operator 'after' that schedules a function to be called

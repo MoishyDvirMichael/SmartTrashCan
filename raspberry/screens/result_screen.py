@@ -14,6 +14,8 @@ class ResultScreen(tk.Frame):
     def __init__(self, master: tk.Tk, color=None, url=None, name='ירנג םש'):
         super().__init__(master, bg=Consts.COLOR_BG_RESULT)
         self.bg_color = Consts.COLOR_BG_RESULT
+        if not color == None:
+            self.bg_color = color
         # Configure the result text.
         if name == None:
             name = ''
@@ -23,8 +25,8 @@ class ResultScreen(tk.Frame):
                                    font=("Arial Bold", 13),
                                    bg=Consts.COLOR_BG_RESULT,
                                    fg=Consts.COLOR_TEXT_RESULT,
-                                   wraplength=160)
-        self.text_label.grid(padx=0, sticky='N')
+                                   wraplength=150)
+        self.text_label.grid(padx=10, sticky='N')
         # Configure the image label.
         self.image_label = Image_to_show(master=self, url=url)
         self.image_label.show_image()
@@ -38,8 +40,8 @@ class ResultScreen(tk.Frame):
                                         font=("Arial Bold", 12),
                                         bg=Consts.COLOR_BG_RESULT,
                                         fg=Consts.COLOR_TEXT_RESULT,
-                                        wraplength=160)
-        self.recycling_label.grid(row=1, column=0, padx=0, sticky='S')
+                                        wraplength=150)
+        self.recycling_label.grid(row=1, column=0, padx=10, sticky='S')
 
     def show_screen(self):
         self.master.configure(background=self.bg_color)
