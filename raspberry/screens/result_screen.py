@@ -3,7 +3,6 @@ from consts import Consts
 from image_conf import Image_to_show
 from database import DB
 from led_strip import Led
-from bidi import algorithm as bidialg
 
 
 class ResultScreen(tk.Frame):
