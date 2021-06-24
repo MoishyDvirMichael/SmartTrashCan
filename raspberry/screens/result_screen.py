@@ -60,7 +60,7 @@ class ResultScreen(tk.Frame):
             self.bg_color = recycling_bin_type.get('color_hex')
             self.recycling_label['text'] = f'This product should be put into the {recycling_bin_type.get("color_name")} recycling bin'
         else:
-            self.recycling_label['text'] = "There is no data about recycling."
+            self.recycling_label['text'] = "There is no data about recycling"
     
     def update_product_details(self, doc):
         product = DB.get_product(doc._data.get('product_id'))
