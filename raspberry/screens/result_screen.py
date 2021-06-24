@@ -17,9 +17,8 @@ class ResultScreen(tk.Frame):
         # Configure the result text.
         if name == None:
             name = '<Name>'
-        hebrew_name = bidialg.get_display(name)
         self.text_label = tk.Label(self,
-                                   text=f'{hebrew_name}\nwas successfully added to your shopping list!',
+                                   text=f'{name}\nwas successfully added to your shopping list!',
                                    font=("Arial Bold", 13),
                                    bg=Consts.COLOR_BG_RESULT,
                                    fg=Consts.COLOR_TEXT_RESULT,
@@ -53,17 +52,15 @@ class ResultScreen(tk.Frame):
     def update_result(self, name, recycling_bin_type, image_url=None):
         if name == None:
             name = ''
-        hebrew_name = bidialg.get_display(name)
-        self.text_label['text'] = f'{hebrew_name}\nwas successfully added to your shopping list!'
+        self.text_label['text'] = f'{name}\nwas successfully added to your shopping list!'
         self.image_label.hide_image()
         self.image_label = Image_to_show(master=self, url=image_url)
         self.image_label.show_image()
         if not recycling_bin_type == None:
             self.bg_color = recycling_bin_type.get('color_hex')
-            self.recycling_label['text'] = f'This product should be put into The {recycling_bin_type.get("color_name")} recycling bin'
+            self.recycling_label['text'] = f'This product should be put into the {recycling_bin_type.get("color_name")} recycling bin'
         else:
             self.recycling_label['text'] = "There is no data about recycling."
-        self.recycling_label['bg'] = self.bg_color
     
     def update_product_details(self, doc):
         product = DB.get_product(doc._data.get('product'))
