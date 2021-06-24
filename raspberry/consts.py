@@ -36,7 +36,7 @@ class Consts:
     GLASS_RECYCLING_BIN_COLOR = 'green'
 
     # colors for the background screens.
-    COLOR_BG_INTENET_CONNECT = '#00ff00'
+    COLOR_BG_INTENET_CONNECT = '#00BCD4'
     COLOR_BG_QR_SCAN = '#00ff00'
     COLOR_BG_WELCOME = '#00BCD4'
     COLOR_BG_WAITING = '#00BCD4'

@@ -11,14 +11,12 @@ class ResultScreen(tk.Frame):
     Class for the result screen in the application.
     It shows data about the prodact (name, image) and offer recycling bin color.
     """
-    def __init__(self, master: tk.Tk, color=None, url=None, name='ירנג םש'):
+    def __init__(self, master: tk.Tk, color=None, url=None, name=None):
         super().__init__(master, bg=Consts.COLOR_BG_RESULT)
-        self.bg_color = Consts.COLOR_BG_RESULT
-        if not color == None:
-            self.bg_color = color
+        self.bg_color = Consts.COLOR_BG_RESULT if color == None else color
         # Configure the result text.
         if name == None:
-            name = ''
+            name = '<Name>'
         hebrew_name = bidialg.get_display(name)
         self.text_label = tk.Label(self,
                                    text=f'{hebrew_name}\nwas successfully added to your shopping list!',
@@ -26,13 +24,13 @@ class ResultScreen(tk.Frame):
                                    bg=Consts.COLOR_BG_RESULT,
                                    fg=Consts.COLOR_TEXT_RESULT,
                                    wraplength=150)
-        self.text_label.grid(padx=10, sticky='N')
+        self.text_label.grid(padx=10, pady=10)
         # Configure the image label.
         self.image_label = Image_to_show(master=self, url=url)
         self.image_label.show_image()
         # configure the recycling message.
         if not color == None:
-            result_text = f'This product should be put into {color} recycling bin'
+            result_text = f'This product should be put into the {color} recycling bin'
         else:
             result_text = "There is no data about recycling."
         self.recycling_label = tk.Label(self,
@@ -41,7 +39,7 @@ class ResultScreen(tk.Frame):
                                         bg=Consts.COLOR_BG_RESULT,
                                         fg=Consts.COLOR_TEXT_RESULT,
                                         wraplength=150)
-        self.recycling_label.grid(row=1, column=0, padx=10, sticky='S')
+        self.recycling_label.grid(row=1, column=0, padx=10, pady=15)
 
     def show_screen(self):
         self.master.configure(background=self.bg_color)
@@ -62,7 +60,7 @@ class ResultScreen(tk.Frame):
         self.image_label.show_image()
         if not recycling_bin_type == None:
             self.bg_color = recycling_bin_type.get('color_hex')
-            self.recycling_label['text'] = f'This product should be put into {recycling_bin_type.get("color_name")} recycling bin'
+            self.recycling_label['text'] = f'This product should be put into The {recycling_bin_type.get("color_name")} recycling bin'
         else:
             self.recycling_label['text'] = "There is no data about recycling."
         self.recycling_label['bg'] = self.bg_color

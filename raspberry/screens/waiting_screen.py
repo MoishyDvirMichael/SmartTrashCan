@@ -16,13 +16,13 @@ class WaitingScreen(tk.Frame):
                                     font=("Arial Bold", 22),
                                     bg=Consts.COLOR_BG_WAITING,
                                     fg=Consts.COLOR_TEXT_WAITING)
-        self.input_label.grid()
+        self.input_label.grid(pady=20)
         self.my_label = tk.Label(self, text="Please wait while it is being updated in the shopping list",
                                  font=("Arial Bold", 15),
                                  bg=Consts.COLOR_BG_WAITING,
                                  fg=Consts.COLOR_TEXT_WAITING,
                                  wraplength=460)
-        self.my_label.grid()
+        self.my_label.grid(pady=20)
 
     def show_screen(self):
         self.pack(expand=True)
