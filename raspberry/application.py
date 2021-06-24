@@ -18,6 +18,7 @@ class Application(tk.Tk):
         DB.init()
         Led.init()
         
+        self.title('Smart Trash Can')
         self.geometry(Consts.SCREEN_SIZE)
         self.fullscreen_state = Consts.FULLSCREEN_DEFAULT_STATE
         self.bind("<F11>", self.toggle_fullscreen)
