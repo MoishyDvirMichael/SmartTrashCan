@@ -18,7 +18,7 @@ class Led:
             return
         pixel_pin = board.D12
         ORDER = neopixel.GRB
-        cls.pixels = neopixel.NeoPixel(pixel_pin, num_pixels, brightness=0.2, auto_write=False, pixel_order=ORDER)
+        cls.pixels = neopixel.NeoPixel(pixel_pin, num_pixels, brightness=0.2, auto_write=True, pixel_order=ORDER)
 
     @classmethod
     def turn_off(cls, start:int = None, n: int = 1):
