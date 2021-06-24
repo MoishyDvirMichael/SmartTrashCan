@@ -16,8 +16,9 @@ class ResultScreen(tk.Frame):
         # Configure the result text.
         if name == None:
             name = '<Name>'
+        hebrew_name = Consts.reverse_hebrew_words(name)
         self.text_label = tk.Label(self,
-                                   text=f'{name}\nwas successfully added to your shopping list!',
+                                   text=f'{hebrew_name}\nwas successfully added to your shopping list!',
                                    font=("Arial Bold", 13),
                                    bg=Consts.COLOR_BG_RESULT,
                                    fg=Consts.COLOR_TEXT_RESULT,
@@ -51,7 +52,8 @@ class ResultScreen(tk.Frame):
     def update_result(self, name, recycling_bin_type, image_url=None):
         if name == None:
             name = ''
-        self.text_label['text'] = f'{name}\nwas successfully added to your shopping list!'
+        hebrew_name = Consts.reverse_hebrew_words(name)
+        self.text_label['text'] = f'{hebrew_name}\nwas successfully added to your shopping list!'
         self.image_label.hide_image()
         self.image_label = Image_to_show(master=self, url=image_url)
         self.image_label.show_image()
