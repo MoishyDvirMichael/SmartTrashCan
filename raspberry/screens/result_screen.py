@@ -63,7 +63,7 @@ class ResultScreen(tk.Frame):
             self.recycling_label['text'] = "There is no data about recycling."
     
     def update_product_details(self, doc):
-        product = DB.get_product(doc._data.get('product'))
+        product = DB.get_product(doc._data.get('product_id'))
         recycling_bin_type = DB.get_recycling_bin_type(product.get('recycling_bin_type')) # TODO what if it's not defined?
         Led.turn_on(recycling_bin_type['color_hex'])
         self.master.result_screen.update_result(name=product.get('name'), recycling_bin_type=recycling_bin_type, image_url=product.get('image'))
