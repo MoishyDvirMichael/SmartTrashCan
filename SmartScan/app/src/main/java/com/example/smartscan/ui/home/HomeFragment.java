@@ -2,6 +2,7 @@ package com.example.smartscan.ui.home;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,9 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -45,13 +48,15 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
+
 import static com.firebase.ui.auth.ui.email.RegisterEmailFragment.TAG;
 
 public class HomeFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private ProductListAdapter adapter;
-    private RecyclerView recyclerView;
+    private RecyclerView products_list;
     private FirestoreRecyclerOptions<Product> options;
 
     private ArchivedListAdapter archive_adapter;
@@ -67,7 +72,7 @@ public class HomeFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
-        recyclerView = root.findViewById(R.id.recycler_list_products);
+        products_list = root.findViewById(R.id.recycler_list_products);
         archive_list = root.findViewById(R.id.recycler_list_archive);
         uuid = mAuth.getUid();
 
@@ -84,6 +89,154 @@ public class HomeFragment extends Fragment {
 
         return root;
     }
+
+    ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+        @Override
+        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+            Toast.makeText(getContext(), "on Move", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        @Override
+        public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+            if(viewHolder instanceof ProductListAdapter.ProductViewHolder){
+                if(swipeDir == ItemTouchHelper.LEFT || swipeDir == ItemTouchHelper.RIGHT){
+                    Toast.makeText(getContext(), "The item has been archived ", Toast.LENGTH_SHORT).show();
+                    int index = viewHolder.getAdapterPosition();
+                    Long barcode = adapter.getItem(index).getBarcode();
+                    final FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    db.collection("users")
+                            .document(mAuth.getUid())
+                            .collection("scanned_products")
+                            .whereEqualTo("barcode", barcode)
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            DocumentReference to_delete = document.getReference();
+                                            DocumentReference dest = db.collection("users")
+                                                    .document(mAuth.getUid())
+                                                    .collection("archived_products")
+                                                    .document();
+                                            moveFirestoreDocument(to_delete, dest, viewHolder.getAdapterPosition(), 0);
+                                            break;
+                                        }
+                                    } else {
+                                        Log.d(TAG, "Error getting documents: ", task.getException());
+                                    }
+                                }
+                            });
+                }
+            } else{
+                if(swipeDir == ItemTouchHelper.LEFT){
+                    Toast.makeText(getContext(), "The item has been restored ", Toast.LENGTH_SHORT).show();
+                    Long barcode = archive_adapter.getItem(viewHolder.getAdapterPosition()).getBarcode();
+                    final FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    db.collection("users")
+                            .document(mAuth.getUid())
+                            .collection("archived_products")
+                            .whereEqualTo("barcode", barcode)
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            DocumentReference to_delete = document.getReference();
+                                            DocumentReference dest = db.collection("users")
+                                                    .document(mAuth.getUid())
+                                                    .collection("scanned_products")
+                                                    .document();
+                                            moveFirestoreDocument(to_delete, dest, viewHolder.getAdapterPosition(), 1);
+                                        }
+                                    } else {
+                                        Log.d(TAG, "Error getting documents: ", task.getException());
+                                    }
+                                }
+                            });
+                } else{
+                    Long barcode = archive_adapter.getItem(viewHolder.getAdapterPosition()).getBarcode();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setMessage("Are you sure you want to delete this product?")
+                            .setTitle("DELETE");
+                    builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            final FirebaseFirestore db = FirebaseFirestore.getInstance();
+                            db.collection("users")
+                                    .document(mAuth.getUid())
+                                    .collection("archived_products")
+                                    .whereEqualTo("barcode", barcode)
+                                    .get()
+                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                                    DocumentReference to_delete = document.getReference();
+                                                    to_delete.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                                            if(task.isSuccessful()){
+                                                                archive_adapter.notifyItemRemoved(viewHolder.getAdapterPosition());
+                                                            }
+                                                            else{
+                                                                Log.d(TAG, "Error deleting documents: ", task.getException());
+                                                            }
+                                                        }
+                                                    });
+                                                    break;
+                                                }
+                                            } else {
+                                                Log.d(TAG, "Error getting documents: ", task.getException());
+                                            }
+                                        }
+                                    });
+                        }
+                    });
+                    builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.dismiss();
+                            archive_adapter.notifyItemChanged(viewHolder.getAdapterPosition());
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
+            }
+        }
+
+        @Override
+        public void onChildDraw(@NonNull @NotNull Canvas c, @NonNull @NotNull RecyclerView recyclerView, @NonNull @NotNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+
+            if(recyclerView == products_list){
+                new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                        .addBackgroundColor(ContextCompat.getColor(getContext(), R.color.Red))
+                        .addActionIcon(R.drawable.ic_baseline_archive_24)
+                        .create()
+                        .decorate();
+            }else{
+                if(dX > 0){
+                    //swiped right
+                    new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                            .addBackgroundColor(ContextCompat.getColor(getContext(), R.color.Red))
+                            .addActionIcon(R.drawable.ic_baseline_delete_24)
+                            .create()
+                            .decorate();
+                } else{
+                    //swiped left
+                    new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                            .addBackgroundColor(ContextCompat.getColor(getContext(), R.color.Green))
+                            .addActionIcon(R.drawable.ic_baseline_refresh_24)
+                            .create()
+                            .decorate();
+                }
+            }
+        }
+    };
 
     private void setArchiveList() {
         CollectionReference ref = db
@@ -115,10 +268,12 @@ public class HomeFragment extends Fragment {
         archive_list.setLayoutManager(new LinearLayoutManager(getActivity()));
         archive_list.setHasFixedSize(true);
         archive_adapter.notifyDataSetChanged();
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(archive_list);
 
-        MySwipeHelper swipeHelper1 = addNewSwipeAction1(archive_list, archive_adapter, "Delete", 0, "#FF3C30");
+        /*MySwipeHelper swipeHelper1 = addNewSwipeAction1(archive_list, archive_adapter, "Delete", 0, "#FF3C30");
         ItemTouchHelper itemTouchHelper1 = new ItemTouchHelper(swipeHelper1);
-        itemTouchHelper1.attachToRecyclerView(archive_list);
+        itemTouchHelper1.attachToRecyclerView(archive_list);*/
 
     }
 
@@ -140,7 +295,6 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onDataChanged() {
-                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -149,13 +303,14 @@ public class HomeFragment extends Fragment {
             }
         });
         adapter = new ProductListAdapter(options);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setHasFixedSize(true);
-        adapter.notifyDataSetChanged();
-        MySwipeHelper swipeHelper = addNewSwipeAction(recyclerView, adapter,"Archive", 0, "#FF3C30");
+        products_list.setAdapter(adapter);
+        products_list.setLayoutManager(new LinearLayoutManager(getActivity()));
+        products_list.setHasFixedSize(true);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(products_list);
+        /*MySwipeHelper swipeHelper = addNewSwipeAction(recyclerView, adapter,"Archive", 0, "#FF3C30");
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeHelper);
-        itemTouchHelper.attachToRecyclerView(recyclerView);
+        itemTouchHelper.attachToRecyclerView(recyclerView);*/
     }
 
     private MySwipeHelper addNewSwipeAction(RecyclerView recyclerview, ProductListAdapter adapter1, String action_text, int drawable_id, String color) {
@@ -170,7 +325,8 @@ public class HomeFragment extends Fragment {
                         new MySwipeHelper.UnderlayButtonClickListener() {
                             @Override
                             public void onClick(int pos) {
-                                Long barcode = adapter1.getItem(viewHolder.getAdapterPosition()).getBarcode();
+                                int index = viewHolder.getAdapterPosition();
+                                Long barcode = adapter1.getItem(index).getBarcode();
                                 final FirebaseFirestore db = FirebaseFirestore.getInstance();
                                 db.collection("users")
                                         .document(mAuth.getUid())
@@ -187,7 +343,7 @@ public class HomeFragment extends Fragment {
                                                                 .document(mAuth.getUid())
                                                                 .collection("archived_products")
                                                                 .document();
-                                                        moveFirestoreDocument(to_delete, dest);
+                                                        moveFirestoreDocument(to_delete, dest, viewHolder.getAdapterPosition(), 0);
                                                         break;
                                                     }
                                                 } else {
@@ -236,7 +392,6 @@ public class HomeFragment extends Fragment {
                                                                 to_delete.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                     @Override
                                                                     public void onSuccess(Void aVoid) {
-                                                                        adapter1.notifyDataSetChanged();
                                                                     }
                                                                 });
                                                                 break;
@@ -288,7 +443,7 @@ public class HomeFragment extends Fragment {
                                                                         .document(mAuth.getUid())
                                                                         .collection("scanned_products")
                                                                         .document();
-                                                                moveFirestoreDocument(to_delete, dest);
+                                                                moveFirestoreDocument(to_delete, dest, viewHolder.getAdapterPosition(), 1);
                                                             }
                                                         } else {
                                                             Log.d(TAG, "Error getting documents: ", task.getException());
@@ -324,7 +479,7 @@ public class HomeFragment extends Fragment {
         adapter.stopListening();
     }
 
-    public void moveFirestoreDocument(DocumentReference fromPath, final DocumentReference toPath) {
+    public void moveFirestoreDocument(DocumentReference fromPath, final DocumentReference toPath, final int index, final int flag) {
         fromPath.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -335,11 +490,20 @@ public class HomeFragment extends Fragment {
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
+
                                         Log.d(TAG, "DocumentSnapshot successfully written!");
                                         fromPath.delete()
                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                     @Override
                                                     public void onSuccess(Void aVoid) {
+                                                        if( flag == 0) {
+                                                            adapter.notifyItemRemoved(index);
+                                                            adapter.notifyDataSetChanged();
+                                                        }
+                                                        else {
+                                                            archive_adapter.notifyItemRemoved(index);
+                                                            archive_adapter.notifyDataSetChanged();
+                                                        }
                                                         Log.d(TAG, "DocumentSnapshot successfully deleted!");
                                                     }
                                                 })

@@ -6,14 +6,11 @@ import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.InputStream;
 import java.util.Objects;
 
-public class ArchivedListAdapter extends FirestoreRecyclerAdapter<Product, ArchivedListAdapter.ProductViewHolder>{
+public class ArchivedListAdapter extends FirestoreRecyclerAdapter<Product, ArchivedListAdapter.ArchivedViewHolder>{
 
     private Context context;
     private FirestoreRecyclerOptions options;
@@ -55,36 +52,15 @@ public class ArchivedListAdapter extends FirestoreRecyclerAdapter<Product, Archi
     }
 
     @Override
-    protected void onBindViewHolder(@NotNull ProductViewHolder holder, int position, @NotNull Product p) {
+    protected void onBindViewHolder(@NotNull ArchivedViewHolder holder, int position, @NotNull Product p) {
         db = FirebaseFirestore.getInstance();
         holder.ptext.setPaintFlags(holder.ptext.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         holder.ptext.setText("");
         holder.ptext.setEnabled(false);
         Drawable originalDrawable = holder.ptext.getBackground();
-
         holder.ptext.setBackgroundResource(android.R.color.transparent);
-
         holder.pimage.setImageResource(R.drawable.ic_baseline_fastfood_24);
 
-        if(p.getIs_identified() != null && p.getIs_identified() == false){
-            holder.ptext.setText("לא ידוע");
-            holder.ptext.setEnabled(false);
-            holder.ptext.setSingleLine();
-            holder.ptext.setBackground(originalDrawable);
-            holder.ptext.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-                @Override
-                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                    if (actionId == 6) {
-                        InputMethodManager imm = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                        holder.ptext.clearFocus();
-                        p.setName(holder.ptext.getText().toString());
-                        Toast.makeText(v.getContext(), holder.ptext.getText(), Toast.LENGTH_SHORT).show();
-                    }
-                    return true;
-                }
-            });
-        }
 
         if(p.getProduct() != null){
             p.getProduct().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -104,26 +80,30 @@ public class ArchivedListAdapter extends FirestoreRecyclerAdapter<Product, Archi
                     }
                 }
             });
+        } else{
+            holder.ptext.setText("לא ידוע");
         }
 
     }
 
+
     @NotNull
     @Override
-    public ProductViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
+    public ArchivedViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.archive_list_row,parent,false);
-        return new ProductViewHolder(view);
+        ArchivedViewHolder viewHolder = new ArchivedViewHolder(view);
+        return viewHolder;
     }
 
-    public class ProductViewHolder extends RecyclerView.ViewHolder {
+    public class ArchivedViewHolder extends RecyclerView.ViewHolder {
         TextView ptext;
         ImageView pimage;
         ImageView pdelete;
 
-        public ProductViewHolder( @NotNull View itemView) {
+        public ArchivedViewHolder(@NotNull View itemView) {
             super(itemView);
-            ptext =itemView.findViewById(R.id.product_name_text);
-            pimage = itemView.findViewById(R.id.product_image);
+            ptext =itemView.findViewById(R.id.archived_product_name_text);
+            pimage = itemView.findViewById(R.id.archived_product_image);
         }
     }
 
