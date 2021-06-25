@@ -16,4 +16,7 @@
     <color name="PrimaryTextColor">#212121</color>
     <color name="SecondaryText">#757575</color>
     <color name="DividerColor">#BDBDBD</color>
+    <color name="Red">#FF3C30</color>
+    <color name="Green">#3E9C00</color>
+
 </resources>
