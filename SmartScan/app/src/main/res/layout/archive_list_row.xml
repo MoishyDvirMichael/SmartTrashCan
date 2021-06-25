@@ -26,7 +26,7 @@
 
             <ImageView
                 android:id="@+id/archived_product_image"
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:padding="5dp"
                 android:contentDescription="@null"

@@ -9,7 +9,7 @@ public class Product {
     private String manual_name;
     private Date date_added;
     private Boolean is_identified;
-    private DocumentReference product;
+    private DocumentReference product_id;
 
     public Product(){}
     public Product(Long code, String name, Date date, Boolean is_identified, DocumentReference ref){
@@ -17,7 +17,7 @@ public class Product {
         this.manual_name = name;
         this.date_added = date;
         this.is_identified = is_identified;
-        this.product = ref;
+        this.product_id = ref;
     }
 
     public Long getBarcode() {
@@ -36,12 +36,12 @@ public class Product {
         this.is_identified = is_identified;
     }
 
-    public DocumentReference getProduct() {
-        return product;
+    public DocumentReference getProduct_id() {
+        return product_id;
     }
 
-    public void setProduct(DocumentReference product) {
-        this.product = product;
+    public void setProduct_id(DocumentReference product_id) {
+        this.product_id = product_id;
     }
 
     public Date getDate_added() {

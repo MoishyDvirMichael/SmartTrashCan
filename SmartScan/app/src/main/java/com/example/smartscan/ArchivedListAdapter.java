@@ -62,14 +62,14 @@ public class ArchivedListAdapter extends FirestoreRecyclerAdapter<Product, Archi
         holder.pimage.setImageResource(R.drawable.ic_baseline_fastfood_24);
 
 
-        if(p.getProduct() != null){
-            p.getProduct().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        if(p.getProduct_id() != null){
+            p.getProduct_id().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
                     if(task.getResult() != null){
                         if(task.getResult().get("name") != null) {
                             String name = Objects.requireNonNull(task.getResult().get("name")).toString();
-                            p.setName(name);
+                            p.setManual_name(name);
                             holder.ptext.setText(name);
                         }
                         if(task.getResult().get("image") != null){

@@ -59,8 +59,8 @@ public class ProductListAdapter extends FirestoreRecyclerAdapter<Product, Produc
         holder.ptext.setBackgroundResource(android.R.color.transparent);
         holder.pimage.setImageResource(R.drawable.ic_baseline_fastfood_24);
 
-        if(p.getProduct() != null){
-            p.getProduct().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        if(p.getProduct_id() != null){
+            p.getProduct_id().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
                     if(task.getResult() != null){

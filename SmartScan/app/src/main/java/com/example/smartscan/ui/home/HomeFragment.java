@@ -47,6 +47,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Objects;
 
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
@@ -100,12 +101,27 @@ public class HomeFragment extends Fragment {
 
         @Override
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+            int index = viewHolder.getAdapterPosition();
             if(viewHolder instanceof ProductListAdapter.ProductViewHolder){
-                if(swipeDir == ItemTouchHelper.LEFT || swipeDir == ItemTouchHelper.RIGHT){
-                    Toast.makeText(getContext(), "The item has been archived ", Toast.LENGTH_SHORT).show();
-                    int index = viewHolder.getAdapterPosition();
-                    Long barcode = adapter.getItem(index).getBarcode();
-                    final FirebaseFirestore db = FirebaseFirestore.getInstance();
+                Long barcode = adapter.getItem(index).getBarcode();
+                if(swipeDir == ItemTouchHelper.LEFT){
+                    db.collection("users").document(uuid)
+                            .collection("scanned_products").whereEqualTo("barcode", barcode)
+                            .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            for(DocumentSnapshot ds : queryDocumentSnapshots.getDocuments()){
+                                DocumentReference ref = ds.getReference();
+                                ref.update("should_add_to_cart", true);
+                                Toast.makeText(getContext(), "Added to your Rami Levy cart", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+                if(swipeDir == ItemTouchHelper.RIGHT || swipeDir == ItemTouchHelper.LEFT){
+                    if(swipeDir == ItemTouchHelper.RIGHT){
+                        Toast.makeText(getContext(), "The item has been archived ", Toast.LENGTH_SHORT).show();
+                    }
                     db.collection("users")
                             .document(mAuth.getUid())
                             .collection("scanned_products")
@@ -131,12 +147,10 @@ public class HomeFragment extends Fragment {
                             });
                 }
             } else{
+                Long barcode = archive_adapter.getItem(index).getBarcode();
                 if(swipeDir == ItemTouchHelper.LEFT){
-                    Toast.makeText(getContext(), "The item has been restored ", Toast.LENGTH_SHORT).show();
-                    Long barcode = archive_adapter.getItem(viewHolder.getAdapterPosition()).getBarcode();
-                    final FirebaseFirestore db = FirebaseFirestore.getInstance();
                     db.collection("users")
-                            .document(mAuth.getUid())
+                            .document(uuid)
                             .collection("archived_products")
                             .whereEqualTo("barcode", barcode)
                             .get()
@@ -147,10 +161,11 @@ public class HomeFragment extends Fragment {
                                         for (QueryDocumentSnapshot document : task.getResult()) {
                                             DocumentReference to_delete = document.getReference();
                                             DocumentReference dest = db.collection("users")
-                                                    .document(mAuth.getUid())
+                                                    .document(uuid)
                                                     .collection("scanned_products")
                                                     .document();
                                             moveFirestoreDocument(to_delete, dest, viewHolder.getAdapterPosition(), 1);
+                                            Toast.makeText(getContext(), "The item has been restored ", Toast.LENGTH_SHORT).show();
                                         }
                                     } else {
                                         Log.d(TAG, "Error getting documents: ", task.getException());
@@ -158,15 +173,13 @@ public class HomeFragment extends Fragment {
                                 }
                             });
                 } else{
-                    Long barcode = archive_adapter.getItem(viewHolder.getAdapterPosition()).getBarcode();
                     AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                     builder.setMessage("Are you sure you want to delete this product?")
                             .setTitle("DELETE");
                     builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            final FirebaseFirestore db = FirebaseFirestore.getInstance();
                             db.collection("users")
-                                    .document(mAuth.getUid())
+                                    .document(uuid)
                                     .collection("archived_products")
                                     .whereEqualTo("barcode", barcode)
                                     .get()
@@ -213,11 +226,23 @@ public class HomeFragment extends Fragment {
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
 
             if(recyclerView == products_list){
-                new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
-                        .addBackgroundColor(ContextCompat.getColor(getContext(), R.color.Red))
-                        .addActionIcon(R.drawable.ic_baseline_archive_24)
-                        .create()
-                        .decorate();
+                if(dX > 0){
+                    //swiped right
+                    new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                            .addBackgroundColor(ContextCompat.getColor(getContext(), R.color.Red))
+                            .addActionIcon(R.drawable.ic_baseline_archive_24)
+                            .create()
+                            .decorate();
+                }
+                else{
+                    //swiped left
+                    new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                            .addBackgroundColor(ContextCompat.getColor(getContext(), R.color.Green))
+                            .addActionIcon(R.drawable.ic_baseline_add_shopping_cart_24)
+                            .create()
+                            .decorate();
+                }
+
             }else{
                 if(dX > 0){
                     //swiped right
@@ -255,7 +280,7 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onDataChanged() {
-                archive_adapter.notifyDataSetChanged();
+                //archive_adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -271,9 +296,6 @@ public class HomeFragment extends Fragment {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(archive_list);
 
-        /*MySwipeHelper swipeHelper1 = addNewSwipeAction1(archive_list, archive_adapter, "Delete", 0, "#FF3C30");
-        ItemTouchHelper itemTouchHelper1 = new ItemTouchHelper(swipeHelper1);
-        itemTouchHelper1.attachToRecyclerView(archive_list);*/
 
     }
 
@@ -308,163 +330,9 @@ public class HomeFragment extends Fragment {
         products_list.setHasFixedSize(true);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(products_list);
-        /*MySwipeHelper swipeHelper = addNewSwipeAction(recyclerView, adapter,"Archive", 0, "#FF3C30");
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeHelper);
-        itemTouchHelper.attachToRecyclerView(recyclerView);*/
+
     }
 
-    private MySwipeHelper addNewSwipeAction(RecyclerView recyclerview, ProductListAdapter adapter1, String action_text, int drawable_id, String color) {
-        return new MySwipeHelper(getContext(), recyclerview) {
-            @Override
-            public void instantiateUnderlayButton(RecyclerView.ViewHolder viewHolder, List<UnderlayButton> underlayButtons) {
-                underlayButtons.add(new MySwipeHelper.UnderlayButton(
-                        action_text,
-                        drawable_id,
-                        Color.parseColor(color),
-                        getContext(),
-                        new MySwipeHelper.UnderlayButtonClickListener() {
-                            @Override
-                            public void onClick(int pos) {
-                                int index = viewHolder.getAdapterPosition();
-                                Long barcode = adapter1.getItem(index).getBarcode();
-                                final FirebaseFirestore db = FirebaseFirestore.getInstance();
-                                db.collection("users")
-                                        .document(mAuth.getUid())
-                                        .collection("scanned_products")
-                                        .whereEqualTo("barcode", barcode)
-                                        .get()
-                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                if (task.isSuccessful()) {
-                                                    for (QueryDocumentSnapshot document : task.getResult()) {
-                                                        DocumentReference to_delete = document.getReference();
-                                                        DocumentReference dest = db.collection("users")
-                                                                .document(mAuth.getUid())
-                                                                .collection("archived_products")
-                                                                .document();
-                                                        moveFirestoreDocument(to_delete, dest, viewHolder.getAdapterPosition(), 0);
-                                                        break;
-                                                    }
-                                                } else {
-                                                    Log.d(TAG, "Error getting documents: ", task.getException());
-                                                }
-                                            }
-                                        });
-                            }
-                        }
-                ));
-
-            }
-        };
-    }
-
-    private MySwipeHelper addNewSwipeAction1(RecyclerView recyclerview, ArchivedListAdapter adapter1, String action_text, int drawable_id, String color) {
-        return new MySwipeHelper(getContext(), recyclerview) {
-            @Override
-            public void instantiateUnderlayButton(RecyclerView.ViewHolder viewHolder, List<UnderlayButton> underlayButtons) {
-                underlayButtons.add(new MySwipeHelper.UnderlayButton(
-                        action_text,
-                        drawable_id,
-                        Color.parseColor(color),
-                        getContext(),
-                        new MySwipeHelper.UnderlayButtonClickListener() {
-                            @Override
-                            public void onClick(int pos) {
-                                Long barcode = adapter1.getItem(viewHolder.getAdapterPosition()).getBarcode();
-                                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                                builder.setMessage("Are you sure you want to delete this product?")
-                                        .setTitle("DELETE");
-                                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        final FirebaseFirestore db = FirebaseFirestore.getInstance();
-                                        db.collection("users")
-                                                .document(mAuth.getUid())
-                                                .collection("archived_products")
-                                                .whereEqualTo("barcode", barcode)
-                                                .get()
-                                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                        if (task.isSuccessful()) {
-                                                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                                                DocumentReference to_delete = document.getReference();
-                                                                to_delete.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                    @Override
-                                                                    public void onSuccess(Void aVoid) {
-                                                                    }
-                                                                });
-                                                                break;
-                                                            }
-                                                        } else {
-                                                            Log.d(TAG, "Error getting documents: ", task.getException());
-                                                        }
-                                                    }
-                                                });
-                                    }
-                                });
-                                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.dismiss();
-                                    }
-                                });
-                                AlertDialog dialog = builder.create();
-                                dialog.show();
-                            }
-                        }
-                ));
-                underlayButtons.add(new MySwipeHelper.UnderlayButton(
-                        "Restore",
-                        drawable_id,
-                        Color.parseColor("#3E9C00"),
-                        getContext(),
-                        new MySwipeHelper.UnderlayButtonClickListener() {
-                            @Override
-                            public void onClick(int pos) {
-                                Long barcode = adapter1.getItem(viewHolder.getAdapterPosition()).getBarcode();
-                                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                                builder.setMessage("Are you sure you want to restore this product?")
-                                        .setTitle("Restore");
-                                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        final FirebaseFirestore db = FirebaseFirestore.getInstance();
-                                        db.collection("users")
-                                                .document(mAuth.getUid())
-                                                .collection("archived_products")
-                                                .whereEqualTo("barcode", barcode)
-                                                .get()
-                                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                        if (task.isSuccessful()) {
-                                                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                                                DocumentReference to_delete = document.getReference();
-                                                                DocumentReference dest = db.collection("users")
-                                                                        .document(mAuth.getUid())
-                                                                        .collection("scanned_products")
-                                                                        .document();
-                                                                moveFirestoreDocument(to_delete, dest, viewHolder.getAdapterPosition(), 1);
-                                                            }
-                                                        } else {
-                                                            Log.d(TAG, "Error getting documents: ", task.getException());
-                                                        }
-                                                    }
-                                                });
-                                    }
-                                });
-                                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.dismiss();
-                                    }
-                                });
-                                AlertDialog dialog = builder.create();
-                                dialog.show();
-                            }
-                        }
-                ));
-            }
-        };
-    }
 
 
     @Override
@@ -486,7 +354,7 @@ public class HomeFragment extends Fragment {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document != null) {
-                        toPath.set(document.getData())
+                        toPath.set(Objects.requireNonNull(document.getData()))
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
@@ -497,12 +365,10 @@ public class HomeFragment extends Fragment {
                                                     @Override
                                                     public void onSuccess(Void aVoid) {
                                                         if( flag == 0) {
-                                                            adapter.notifyItemRemoved(index);
-                                                            adapter.notifyDataSetChanged();
+                                                            //adapter.notifyItemRemoved(index);
                                                         }
                                                         else {
-                                                            archive_adapter.notifyItemRemoved(index);
-                                                            archive_adapter.notifyDataSetChanged();
+                                                            //archive_adapter.notifyItemRemoved(index);
                                                         }
                                                         Log.d(TAG, "DocumentSnapshot successfully deleted!");
                                                     }
