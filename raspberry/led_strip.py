@@ -48,7 +48,7 @@ class Led:
         if platform.system().lower().startswith('win'):
             return
         try: 
-            color = hex.lstrip('#').lstrip('0x')
+            color = hex.replace('#','',1).replace('0x','',1)
             return tuple(int(color[i:i+2], 16) for i in (0, 2, 4))
         except:
             return (0, 0, 0)
