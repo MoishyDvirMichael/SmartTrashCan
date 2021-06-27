@@ -32,7 +32,7 @@ class Consts:
 
     # size of result screen texts in pixels.
     RESULT_TEXTS_WIDTH = 180
-    RESULT_TEXTS_WIDTH_PAD = 10
+    RESULT_TEXTS_WIDTH_PAD = 6
     RESULT_NAME_WIDTH = (RESULT_TEXTS_WIDTH + 2 * RESULT_TEXTS_WIDTH_PAD + IMAGE_WIDTH_SIZE)
 
     # The timeout use operator 'after' that schedules a function to be called
@@ -55,7 +55,7 @@ class Consts:
     COLOR_BG_WAITING = '#00BCD4'
     COLOR_BG_ERROR = '#212121'
     COLOR_BG_RESULT = '#BDBDBD'
-    COLOR_BG_RESULT_NAME = '#FFFFFF'
+    COLOR_BG_NO_RECYCLING_INFO = '#212121'
 
     # colors for the background screens.
     COLOR_TEXT_INTENET_CONNECT = '#212121'
