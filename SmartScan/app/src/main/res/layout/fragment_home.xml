@@ -34,6 +34,7 @@
             android:id="@+id/recycler_list_products"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             app:layout_constraintBottom_toTopOf="@id/text_archive"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -62,6 +63,7 @@
             android:id="@+id/recycler_list_archive"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:minHeight="200dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"

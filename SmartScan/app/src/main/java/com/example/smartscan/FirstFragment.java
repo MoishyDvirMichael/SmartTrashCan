@@ -8,14 +8,20 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -28,35 +34,55 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.smartscan.databinding.FragmentFirstBinding;
+import com.example.smartscan.ui.gallery.GalleryFragment;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.vision.CameraSource;
+import com.google.android.gms.vision.Detector;
+import com.google.android.gms.vision.barcode.Barcode;
+import com.google.android.gms.vision.barcode.BarcodeDetector;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthCredential;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FirstFragment extends Fragment {
 
     private FragmentFirstBinding binding;
-    private Spinner wifi_ssid;
-    private EditText wifi_password;
-    private ImageView barcode;
-    private WifiManager wifiManager;
-    private WifiReceiver wifiReceiver;
+
     private FirebaseAuth acct;
+    private FirebaseFirestore db;
+
+    private SurfaceView surfaceView;
+    private BarcodeDetector barcodeDetector;
+    private CameraSource cameraSource;
+    private static final int REQUEST_CAMERA_PERMISSION = 201;
+    //This class provides methods to play DTMF tones
+    private ToneGenerator toneGen1;
+    private TextView barcodeText;
+    private String barcodeData;
+    private int flag;
 
 
 
@@ -74,108 +100,37 @@ public class FirstFragment extends Fragment {
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        wifi_ssid = binding.wifiSsid;
-        wifi_password = binding.wifiPassword;
-        barcode = binding.barcodeImage;
-        wifiManager = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        wifiReceiver = new WifiReceiver();
-
-        getActivity().getApplicationContext().registerReceiver(wifiReceiver,
-                new IntentFilter(wifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-
-        if(ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.ACCESS_FINE_LOCATION},0);
-        }
-
         acct = FirebaseAuth.getInstance();
-        scanWifi();
-
-        binding.generateBarcode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    barCodeButton();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        wifi_password.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                checkFieldsForEmptyValues();
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                checkFieldsForEmptyValues();
-            }
-        });
-        binding.firstFragmentNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                NavHostFragment.findNavController(FirstFragment.this)
-                        .navigate(R.id.action_FirstFragment_to_SecondFragment);
-            }
-        });
+        db = FirebaseFirestore.getInstance();
+        toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC,     100);
+        surfaceView = binding.surfaceView;
+        barcodeText = binding.barcodeText;
+        flag = 0;
+        if (ContextCompat.checkSelfPermission(getContext(),
+                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+            ActivityCompat.requestPermissions(getActivity(), new
+                    String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+        else
+            initialiseDetectorsAndSources();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        wifi_ssid.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(parent.getChildAt(0) != null){
-                    ((TextView) parent.getChildAt(0)).setTextColor(Color.BLACK);
-                    ((TextView) parent.getChildAt(0)).setTextSize(16);
-                    ((TextView) parent.getChildAt(0)).setGravity(Gravity.CENTER);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        wifi_ssid.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(parent.getChildAt(0) != null){
-                    ((TextView) parent.getChildAt(0)).setTextColor(Color.BLACK);
-                    ((TextView) parent.getChildAt(0)).setTextSize(16);
-                    ((TextView) parent.getChildAt(0)).setGravity(Gravity.CENTER);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
+        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+        initialiseDetectorsAndSources();
     }
 
-    private void scanWifi() {
-        wifiManager.startScan();
-        List<ScanResult> results = wifiManager.getScanResults();
-        ArrayList<String> wifi_names = new ArrayList<>();
-        for(ScanResult wifi : results){
-            wifi_names.add(wifi.SSID);
-        }
-        ArrayAdapter<String> wifiAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, wifi_names);
-        wifiAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        wifi_ssid.setAdapter(wifiAdapter);
+    @Override
+    public void onPause() {
+        super.onPause();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+        cameraSource.release();
     }
 
     @Override
@@ -184,50 +139,110 @@ public class FirstFragment extends Fragment {
         binding = null;
     }
 
-    public void barCodeButton() throws JSONException {
-        binding.generateBarcode.setVisibility(View.INVISIBLE);
-        JSONObject qr_json = new JSONObject();
-        qr_json.put("uid", acct.getUid());
-        qr_json.put("wifi_name", wifi_ssid.getSelectedItem().toString());
-        qr_json.put("wifi_password", wifi_password.getText().toString());
-        String qr_string = qr_json.toString();
-        MultiFormatWriter multiFormatWriter= new MultiFormatWriter();
-        try {
-            BitMatrix bitMatrix = multiFormatWriter.encode(qr_string, BarcodeFormat.QR_CODE,
-                    barcode.getWidth(),barcode.getHeight());
-            Bitmap bitmap = Bitmap.createBitmap(barcode.getWidth(), barcode.getHeight(), Bitmap.Config.RGB_565);
-            for(int i = 0; i < barcode.getWidth(); i++){
-                for(int j = 0; j< barcode.getHeight(); j++){
-                    bitmap.setPixel(i, j, bitMatrix.get(i,j)? Color.BLACK: Color.WHITE);
+
+    private void initialiseDetectorsAndSources() {
+
+        //Toast.makeText(getApplicationContext(), "Barcode scanner started", Toast.LENGTH_SHORT).show();
+
+        barcodeDetector = new BarcodeDetector.Builder(getContext())
+                .setBarcodeFormats(Barcode.ALL_FORMATS)
+                .build();
+
+        cameraSource = new CameraSource.Builder(getContext(), barcodeDetector)
+                .setRequestedPreviewSize(1920, 1080)
+                .setAutoFocusEnabled(true) //you should add this feature
+                .build();
+
+        surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
+            @Override
+            public void surfaceCreated(SurfaceHolder holder) {
+                try {
+                    if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                        cameraSource.start(surfaceView.getHolder());
+                    } else {
+                        ActivityCompat.requestPermissions(getActivity(), new
+                                String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+
+
             }
-            barcode.setImageBitmap(bitmap);
-        } catch (WriterException e) {
-            e.printStackTrace();
-        }
 
+            @Override
+            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+            }
+
+            @Override
+            public void surfaceDestroyed(SurfaceHolder holder) {
+                cameraSource.stop();
+            }
+        });
+
+
+        barcodeDetector.setProcessor(new Detector.Processor<Barcode>() {
+            @Override
+            public void release() {
+                // Toast.makeText(getApplicationContext(), "To prevent memory leaks barcode scanner has been stopped", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void receiveDetections(Detector.Detections<Barcode> detections) {
+                final SparseArray<Barcode> barcodes = detections.getDetectedItems();
+
+                if (barcodes.size() != 0) {
+                    barcodeText.post(new Runnable() {
+
+                        @Override
+                        public void run() {
+
+                            if (barcodes.valueAt(0).email != null) {
+                                barcodeText.removeCallbacks(null);
+                                barcodeData = barcodes.valueAt(0).email.address;
+                                barcodeText.setText(barcodeData);
+                                toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP, 150);
+                                getActivity().finish();
+                            } else{
+                                if(flag == 0){
+                                    flag=1;
+                                    barcodeData = barcodes.valueAt(0).displayValue;
+                                    barcodeText.setText(barcodeData);
+                                    toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP, 150);
+                                    Map<String, Object> new_barcode = new HashMap<>();
+                                    new_barcode.put("barcode", Long.parseLong(barcodeData));
+                                    db.collection("users").document(acct.getUid())
+                                            .collection("scanned_products")
+                                            .document().set(new_barcode)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("firstFrag", "DocumentSnapshot successfully written!");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w("firstFrag", "Error writing document", e);
+                                                }
+                                            });
+                                }
+                                getActivity().finish();
+                            }
+                        }
+
+                        @Override
+                        protected void finalize() throws Throwable {
+                            super.finalize();
+                            cameraSource.release();
+                        }
+                    });
+
+                }
+
+            }
+        });
     }
-
-    class WifiReceiver extends BroadcastReceiver{
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-        }
-    }
-
-
-    void checkFieldsForEmptyValues(){
-        Button b = (Button) binding.generateBarcode;
-
-        String s1 = wifi_password.getText().toString();
-
-        if(s1.equals("")){
-            b.setEnabled(false);
-        } else {
-            b.setEnabled(true);
-        }
-    }
-
 
 }

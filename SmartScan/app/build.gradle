@@ -73,11 +73,14 @@ dependencies {
 
     // FirebaseUI for Cloud Storage
     implementation 'com.firebaseui:firebase-ui-storage:7.1.1'
-    implementation "com.google.firebase:firebase-firestore:23.0.0"
+    implementation "com.google.firebase:firebase-firestore:23.0.1"
     implementation "com.google.firebase:firebase-database:20.0.0"
     implementation "com.google.firebase:firebase-storage:20.0.0"
 
     //decorate recyclerviews
     implementation 'it.xabaras.android:recyclerview-swipedecorator:1.2.3'
+
+    //barcode scanner
+    implementation 'com.google.android.gms:play-services-vision:20.1.3'
 
 }

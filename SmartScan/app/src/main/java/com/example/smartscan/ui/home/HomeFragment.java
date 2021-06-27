@@ -166,6 +166,7 @@ public class HomeFragment extends Fragment {
                                                     .document();
                                             moveFirestoreDocument(to_delete, dest, viewHolder.getAdapterPosition(), 1);
                                             Toast.makeText(getContext(), "The item has been restored ", Toast.LENGTH_SHORT).show();
+                                            break;
                                         }
                                     } else {
                                         Log.d(TAG, "Error getting documents: ", task.getException());
@@ -278,6 +279,7 @@ public class HomeFragment extends Fragment {
                 archive_adapter.notifyDataSetChanged();
             }
 
+
             @Override
             public void onDataChanged() {
                 //archive_adapter.notifyDataSetChanged();
@@ -292,7 +294,6 @@ public class HomeFragment extends Fragment {
         archive_list.setAdapter(archive_adapter);
         archive_list.setLayoutManager(new LinearLayoutManager(getActivity()));
         archive_list.setHasFixedSize(true);
-        archive_adapter.notifyDataSetChanged();
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(archive_list);
 
@@ -312,7 +313,14 @@ public class HomeFragment extends Fragment {
         options.getSnapshots().addChangeEventListener(new ChangeEventListener() {
             @Override
             public void onChildChanged(@NonNull @NotNull ChangeEventType type, @NonNull @NotNull DocumentSnapshot snapshot, int newIndex, int oldIndex) {
-                adapter.notifyDataSetChanged();
+                switch (type){
+                    case ADDED:
+                        adapter.notifyDataSetChanged();
+                        break;
+                    case REMOVED:
+                        adapter.notifyItemRemoved(oldIndex);
+                        break;
+                }
             }
 
             @Override
