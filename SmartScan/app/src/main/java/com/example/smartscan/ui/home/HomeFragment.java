@@ -269,7 +269,7 @@ public class HomeFragment extends Fragment {
                 .collection("users")
                 .document(uuid)
                 .collection("archived_products");
-        Query query = ref.orderBy("barcode", Query.Direction.DESCENDING);
+        Query query = ref.orderBy("date_added", Query.Direction.DESCENDING);
         archive_options = new FirestoreRecyclerOptions.Builder<Product>()
                 .setQuery(query, Product.class)
                 .build();
@@ -306,7 +306,7 @@ public class HomeFragment extends Fragment {
                 .collection("users")
                 .document(uuid)
                 .collection("scanned_products");
-        Query query = ref.orderBy("barcode", Query.Direction.DESCENDING);
+        Query query = ref.orderBy("date_added", Query.Direction.DESCENDING);
         options = new FirestoreRecyclerOptions.Builder<Product>()
                 .setQuery(query, Product.class)
                 .build();
@@ -314,11 +314,11 @@ public class HomeFragment extends Fragment {
             @Override
             public void onChildChanged(@NonNull @NotNull ChangeEventType type, @NonNull @NotNull DocumentSnapshot snapshot, int newIndex, int oldIndex) {
                 switch (type){
-                    case ADDED:
-                        adapter.notifyDataSetChanged();
-                        break;
                     case REMOVED:
                         adapter.notifyItemRemoved(oldIndex);
+                        break;
+                    default:
+                        adapter.notifyDataSetChanged();
                         break;
                 }
             }

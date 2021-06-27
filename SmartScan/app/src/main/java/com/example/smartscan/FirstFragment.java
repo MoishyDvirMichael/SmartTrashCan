@@ -51,6 +51,7 @@ import com.google.android.gms.vision.barcode.BarcodeDetector;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthCredential;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -122,14 +123,12 @@ public class FirstFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
         initialiseDetectorsAndSources();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
         cameraSource.release();
     }
 
@@ -212,6 +211,7 @@ public class FirstFragment extends Fragment {
                                     toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP, 150);
                                     Map<String, Object> new_barcode = new HashMap<>();
                                     new_barcode.put("barcode", Long.parseLong(barcodeData));
+                                    new_barcode.put("date_added", FieldValue.serverTimestamp());
                                     db.collection("users").document(acct.getUid())
                                             .collection("scanned_products")
                                             .document().set(new_barcode)
