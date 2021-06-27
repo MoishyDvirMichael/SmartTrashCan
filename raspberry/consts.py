@@ -55,7 +55,7 @@ class Consts:
     COLOR_BG_WAITING = '#00BCD4'
     COLOR_BG_ERROR = '#212121'
     COLOR_BG_RESULT = '#BDBDBD'
-    COLOR_BG_RESULT_NAME = '#FFFFFF'
+    COLOR_BG_NO_RECYCLING_INFO = '#212121'
 
     # colors for the background screens.
     COLOR_TEXT_INTENET_CONNECT = '#212121'

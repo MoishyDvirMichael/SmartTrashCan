@@ -33,7 +33,7 @@ class ResultScreen(tk.Frame):
         self.name_label = tk.Label(self,
                                    text=f'{hebrew_name}',
                                    font=("Arial Bold", 15),
-                                   bg=Consts.COLOR_BG_RESULT_NAME,
+                                   bg=Consts.COLOR_BG_RESULT,
                                    fg=Consts.COLOR_TEXT_RESULT)
         self.name_label.grid(columnspan=3, ipadx=pad_length, pady=0)
         # Configure the result text.
@@ -47,13 +47,9 @@ class ResultScreen(tk.Frame):
         # Configure the image label.
         self.image_label = Image_to_show(master=self, url=url)
         self.image_label.show_image()
-        # Configure the recycling message.
-        if not color == None:
-            result_text = f'This product should be put into the {color} recycling bin'
-        else:
-            result_text = "There is no data about recycling"
+        
         self.recycling_label = tk.Label(self,
-                                        text=result_text,
+                                        text= 'There is no data about recycling' if color == None else f'This product should be put into the {color} recycling bin',
                                         font=("Arial Bold", 12),
                                         bg=Consts.COLOR_BG_RESULT,
                                         fg=Consts.COLOR_TEXT_RESULT,
@@ -63,7 +59,7 @@ class ResultScreen(tk.Frame):
     def show_screen(self):
         self.master.configure(background=self.bg_color)
         self.pack(expand=True)
-        # self.master.after(Consts.RESULT_TIMEOUT, self.master.change_screen, self.master.welcome_screen)
+        self.master.after(Consts.RESULT_TIMEOUT, self.master.change_screen, self.master.welcome_screen)
 
     def hide_screen(self):
         self.pack_forget()
@@ -77,17 +73,18 @@ class ResultScreen(tk.Frame):
         self.name_label['text'] = f'{hebrew_name}'
         self.name_label.grid_forget()
         pad_length = calculates_width_pad_for_name(name=hebrew_name)
-        self.name_label.grid(columnspan=3, ipadx=pad_length, pady=0)
+        self.name_label.grid(row=0, columnspan=3, ipadx=pad_length, pady=0)
         # Reconfigure the image label.
         self.image_label.hide_image()
         self.image_label = Image_to_show(master=self, url=image_url)
         self.image_label.show_image()
         # Reconfigure the recycling message.
-        if not recycling_bin_type == None:
+        if recycling_bin_type == None or recycling_bin_type.get('name') == 'unknown':
+            self.bg_color = Consts.COLOR_BG_NO_RECYCLING_INFO
+            self.recycling_label['text'] = "There is no data about recycling"
+        else:
             self.bg_color = recycling_bin_type.get('color_hex')
             self.recycling_label['text'] = f'This product should be put into the {recycling_bin_type.get("color_name")} recycling bin'
-        else:
-            self.recycling_label['text'] = "There is no data about recycling"
     
     def update_product_details(self, doc):
         product = DB.get_product(doc._data.get('product_id'))
