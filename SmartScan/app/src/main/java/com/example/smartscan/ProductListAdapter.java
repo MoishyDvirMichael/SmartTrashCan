@@ -32,6 +32,7 @@ public class ProductListAdapter extends FirestoreRecyclerAdapter<Product, Produc
     private FirestoreRecyclerOptions options;
     private FirebaseFirestore db;
     private String image_url;
+    private String product_name;
 
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
@@ -65,8 +66,11 @@ public class ProductListAdapter extends FirestoreRecyclerAdapter<Product, Produc
                 public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
                     if(task.getResult() != null){
                         if(task.getResult().get("name") != null) {
-                            String name = Objects.requireNonNull(task.getResult().get("name")).toString();
-                            holder.ptext.setText(name);
+                            product_name = Objects.requireNonNull(task.getResult().get("name")).toString();
+                            holder.ptext.setText(product_name);
+                        }
+                        else{
+                            holder.ptext.setText("לא ידוע");
                         }
                         if(task.getResult().get("image") != null){
                             image_url = task.getResult().get("image").toString();
@@ -74,10 +78,11 @@ public class ProductListAdapter extends FirestoreRecyclerAdapter<Product, Produc
                                     .execute(image_url);
                         }
                     }
+                    else{
+                        holder.ptext.setText("לא ידוע");
+                    }
                 }
             });
-        } else{
-            holder.ptext.setText("לא ידוע");
         }
 
     }

@@ -25,9 +25,10 @@
             android:name="com.google.android.gms.vision.DEPENDENCIES"
             android:value="barcode" />
         <activity
-            android:name=".ConnectNewDevice"
+            android:name=".ScanNewBarcode"
             android:label="@string/title_activity_connect_new_device"
             android:theme="@style/Theme.SmartScan.NoActionBar"
+            android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".MainActivity"

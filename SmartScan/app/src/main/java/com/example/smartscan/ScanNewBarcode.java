@@ -8,6 +8,7 @@ import android.media.ToneGenerator;
 import android.os.Build;
 import android.os.Bundle;
 
+import com.example.smartscan.databinding.ActivityScanNewBarcodeBinding;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
@@ -16,6 +17,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.util.Log;
@@ -34,17 +36,17 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.example.smartscan.databinding.ActivityConnectNewDeviceBinding;
+import com.example.smartscan.databinding.ActivityScanNewBarcodeBinding;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
 
-public class ConnectNewDevice extends AppCompatActivity {
+public class ScanNewBarcode extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
-    private ActivityConnectNewDeviceBinding binding;
+    private ActivityScanNewBarcodeBinding binding;
 
 
 
@@ -54,17 +56,21 @@ public class ConnectNewDevice extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityConnectNewDeviceBinding.inflate(getLayoutInflater());
+        binding = ActivityScanNewBarcodeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.toolbar);
-
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_connect_new_device);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
 
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 
     @Override

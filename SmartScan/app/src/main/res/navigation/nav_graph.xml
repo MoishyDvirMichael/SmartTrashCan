@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/FirstFragment"
         android:name="com.example.smartscan.FirstFragment"
-        android:label="Step 1: Connect to WiFi"
+        android:label="Scan a new barcode"
         tools:layout="@layout/fragment_first">
 
         <action
