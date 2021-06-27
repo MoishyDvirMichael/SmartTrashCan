@@ -32,7 +32,7 @@ class Consts:
 
     # size of result screen texts in pixels.
     RESULT_TEXTS_WIDTH = 180
-    RESULT_TEXTS_WIDTH_PAD = 10
+    RESULT_TEXTS_WIDTH_PAD = 6
     RESULT_NAME_WIDTH = (RESULT_TEXTS_WIDTH + 2 * RESULT_TEXTS_WIDTH_PAD + IMAGE_WIDTH_SIZE)
 
     # The timeout use operator 'after' that schedules a function to be called
