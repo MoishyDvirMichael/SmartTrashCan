@@ -5,7 +5,7 @@ if platform.system().lower().startswith('lin'):
     import board
     import neopixel
 
-num_pixels = 29
+num_pixels = 38
 # num_pixels = 66
 
 
