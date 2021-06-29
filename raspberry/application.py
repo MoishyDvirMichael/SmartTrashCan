@@ -21,6 +21,7 @@ class Application(tk.Tk):
         self.title('Smart Trash Can')
         self.geometry(Consts.SCREEN_SIZE)
         self.fullscreen_state = Consts.FULLSCREEN_DEFAULT_STATE
+        self.attributes("-fullscreen", self.fullscreen_state)
         self.bind("<F11>", self.toggle_fullscreen)
         self.bind("<Escape>", self.end_fullscreen)
         

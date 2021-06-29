@@ -23,7 +23,7 @@ class Consts:
 
     # size of raspberry screen.
     SCREEN_SIZE = '480x320'
-    FULLSCREEN_DEFAULT_STATE = False
+    FULLSCREEN_DEFAULT_STATE = True
     
     # size of result image in pixels.
     IMAGE_HEIGHT_SIZE = 250
